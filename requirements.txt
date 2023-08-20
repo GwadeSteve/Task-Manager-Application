@@ -1,0 +1,13 @@
+Django==3.2.8
+psycopg2-binary==2.9.1   # PostgreSQL database support
+gunicorn==20.1.0         # Web server for deployment
+django-crispy-forms==1.13.0  # Styling forms
+django-environ==0.6.0   # Environment variable handling
+django-heroku==0.3.1    # Simplifies Heroku deployment
+whitenoise==5.3.0       # Static file serving for production
+django-rest-framework==3.12.4  # Building APIs
+djangorestframework-simplejwt==5.0.0  # JWT authentication for APIs
+django-cors-headers==3.8.0  # CORS handling
+django-allauth==0.45.0  # User authentication and account management
+Pillow==8.3.1           # Image handling
+python-decouple==3.5   # Managing configuration parameters

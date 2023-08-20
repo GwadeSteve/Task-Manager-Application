@@ -1,0 +1,1 @@
+The Task Manager Web App is a web application built using Django and Django Rest Framework. It allows users to manage their tasks by providing a user-friendly interface for creating, updating, and deleting tasks.
