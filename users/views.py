@@ -1,9 +1,9 @@
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
-from .forms import CustomUserCreationForm, CustomUserLoginForm
+from .forms import CustomUserCreationForm, CustomUserLoginForm,CustomUserUpdateForm
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-
+from .models import CustomUser
 
 def register(request):
     if request.method == 'POST':
@@ -39,3 +39,14 @@ def user_login(request):
 def user_logout(request):
     logout(request)
     return redirect('users:login') 
+
+@login_required
+def update_profile(request):
+    if request.method == 'POST':
+        form = CustomUserUpdateForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect('profile')  # Redirect to profile page or wherever you want
+    else:
+        form = CustomUserUpdateForm(instance=request.user)
+    return render(request, 'users/update_profile.html', {'form': form})

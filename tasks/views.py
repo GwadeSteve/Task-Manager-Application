@@ -6,11 +6,19 @@ from .models import Task
 from .forms import TaskForm
 from django.views import View
 
+
+class Loader(View):
+    template_name = 'tasks/loader.html'
+
+    def get(self, request, *args, **kwargs):
+        return render(request, self.template_name)
+
 class HomeView(View):
     template_name = 'tasks/home.html'
 
     def get(self, request, *args, **kwargs):
         return render(request, self.template_name)
+    
 
 class TaskListView(LoginRequiredMixin, ListView):
     model = Task
