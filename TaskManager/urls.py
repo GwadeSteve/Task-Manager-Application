@@ -15,15 +15,28 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path,include
-from tasks.views import HomeView
+import tasks.views as t
+import users.views as v
+from django.conf import settings
+from django.conf.urls.static import static
 
 
 
 urlpatterns = [
-    path('', HomeView.as_view(), name='home'), 
+    path('', t.Loader.as_view(), name='Loader'), 
+    path('home/',t.HomeView.as_view(),name="home"),
     path('admin/', admin.site.urls),
     path('tasks/', include('tasks.urls')),
-    path('users/',include('users.urls')),
-    
+    path('register/',v.register,name="register"),
+    path('login/',v.user_login,name="login"),
+    path('logout/',v.user_logout,name="logout"),
+    path('update-profile/',v.update_profile,name="update-profile")
     # Add other URL patterns for different apps here
 ]
+
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+
+
