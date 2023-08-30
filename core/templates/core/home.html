@@ -1,0 +1,114 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Task Craft</title>
+        <meta name="description" content="">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href={% static 'core/css/home.css' %}>
+        <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/2.2.0/anime.min.js"></script>
+        <script src="https://unpkg.com/scrollreveal"></script>
+    </head>
+    <body>
+        <header class="Logo">
+          <img src={% static 'core/Resources/Task Craft Logo.png' %} alt="Task Craft Logo" class="w3-image" width="100px" height="100px">
+        </header>
+        <section class="Main">
+          <div class="Main-Left">
+            <p class="FirstText w3-left-align w3-animate-left">Master Your Productivity<br />with Task Craft</p>
+            <p class="SecondText w3-left-align w3-animate-right">Where efficiency Meets Elegance in the Ultimate Task Management experience. </p>
+            <a href={% url 'users:register' %} class="w3-left-align"><button class="w3-btn w3-center" type="button">Try Now</button></a>
+          </div>
+          <div class="Main-Right">
+            <img src={% static 'core/Resources/Side.png' %} class="w3-image" alt="Illustration for Task Craft" width="750px" height="685px">
+          </div>
+        </section>
+        <section class="Meet w3-container">
+          <div class="Texts w3-center">
+            <p class="FirstText w3-center">Meet Task Craft</p>
+            <p class="SecondText w3-center">The Hub of Productivity, All your users in one single place</p>
+          </div>
+          <div class="wrapper w3-container w3-center">
+            <div class="scroll-cards w3-container">
+                <article class="scroll-cards__item" aria-label="Wie - 1">
+                    <div class="Cover w3-left-align" style="border-color: #ff54544c;">
+                      <img src={% static 'core/Resources/workflow.png' %} alt="Icon 1">
+                    </div>
+                    <h2 class="w3-left-align">Personalized Workflows</h2>
+                    <p class="w3-left-align">We understand that everyone works differently. Task Craft empowers you to create personalized workflows that suit your unique work style. Customize task categories, labels, and notifications to craft an environment that boosts your productivity your way.</p>
+                </article>
+                <article class="scroll-cards__item" aria-label="Wie - 1">
+                    <div class="Cover" style="border-color: rgba(18, 34, 157, 0.30);">
+                      <img src={% static 'core/Resources/stopwatch.png' %} alt="Icon 2">
+                    </div>
+                    <h2 class="w3-left-align">Any time Access</h2>
+                    <p class="w3-left-align">Your tasks should never tie you down. Task Craft offers seamless synchronization across all your devices, ensuring you're always connected to your to-dos whether you're at your desk or on the move. Your productivity is truly in your hands.</p>
+                </article>
+                <article class="scroll-cards__item" aria-label="Wie - 1">
+                    <div class="Cover w3-left-align" style="border-color: rgba(55, 156, 47, 0.40);"> 
+                      <img class="w3-left-align" src={% static 'core/Resources/security.png' %} alt="Icon 3">
+                    </div>
+                    <h2 class="w3-left-align">Data Security Assured</h2>
+                    <p class="w3-left-align">Your peace of mind is our priority. Task Craft is equipped with robust security features that safeguard your sensitive information. With end-to-end encryption and proactive data protection, you can trust Task Craft to keep your data secure.</p>
+                </article>
+                <article class="scroll-cards__item" aria-label="Wie - 1">
+                    <div class="Cover w3-left-align" style="border-color:rgba(253, 158, 46, 0.40);"> 
+                      <img class="w3-left-align" src={% static 'core/Resources/tasks-open.png' %} alt="Icon 4">  
+                    </div>
+                    <h2 class="w3-left-align">Organization</h2>
+                    <p class="w3-left-align">Effortlessly manage tasks, projects, and deadlines with Task Craft's intuitive and user-friendly interface, streamlining your work processes and enhancing your overall efficiency. Say goodbye to clutter and hello to clarity.</p>
+                </article>
+            </div>
+          </div>
+        </section>
+        <section class="Ellipses">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w3-image Ellipse1" width="250" height="175" viewBox="0 0 250 175" fill="none">
+              <path d="M250 50C250 -19.0356 194.036 -75 125 -75C55.9644 -75 0 -19.0356 0 50C0 119.036 55.9644 175 125 175C194.036 175 250 119.036 250 50Z" fill="url(#paint0_linear_51_151)"/>
+              <defs>
+              <linearGradient id="paint0_linear_51_151" x1="194" y1="2.5" x2="342.5" y2="276" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#FF5454"/>
+              <stop offset="1" stop-color="#FF5454" stop-opacity="0.57"/>
+              </linearGradient>
+              </defs>
+          </svg>
+          <svg xmlns="http://www.w3.org/2000/svg" class="w3-image Ellipse2" width="100" height="100" viewBox="0 0 100 100" fill="none">
+            <circle cx="50" cy="50" r="50" fill="#FF5454" fill-opacity="0.2"/>
+          </svg>
+          <svg xmlns="http://www.w3.org/2000/svg" class="w3-image Ellipse3" width="50" height="50" viewBox="0 0 50 50" fill="none">
+            <circle cx="25" cy="25" r="25" fill="#FD9E2E" fill-opacity="0.2"/>
+          </svg>
+          <svg xmlns="http://www.w3.org/2000/svg" class="w3-image Ellipse4" width="100" height="100" viewBox="0 0 100 100" fill="none">
+            <circle cx="50" cy="50" r="50" fill="#FD9E2E"/>
+          </svg>
+        </section>
+        <section class="Footer w3-center" style="width;100%;">
+          <div class="Texts-Input w3-center" style="width;100%;">
+            <p class="FirstText">Don't miss upcoming updates</p>
+            <p class="SecondText">Be the first to know what is next, Leave us your email and wait for updates</p>
+            <div class="Input w3-center">
+              <input type="email" id="emailInput" class="input-field" placeholder="Enter your email">
+              <button id="submitButton" class="submit-button w3-btn">Submit</button> 
+            </div>
+          </div>
+          <div class="Copyright w3-center" style="width:100%;">
+            <p class="cpy-text w3-center" style="font-size: 13px;color:#00000099;">Task Craft 2023, All rights reserved</p>
+          </div>
+        </section>
+        <!--<script>
+          ScrollReveal().reveal('.scroll-cards__item', {
+            duration: 200,
+            distance: '30px',
+            easing: 'ease-in-out',
+            origin: 'bottom',
+            viewFactor: 0.5,
+            reset: true
+          });
+        </script>-->
+    </body>
+</html>

@@ -5,40 +5,51 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import CustomUser
 
-def register(request):
+def Loader(request):
+    return render(request, 'users/loading.html')
+
+def HomeView(request):
+    return render(request,'users/home.html')
+
+def register_view(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            user = authenticate(request, username=user.email, password=form.cleaned_data['password1'])
+            user = form.save()  # Save the user object
+            # Authenticate the user and log them in
+            user = authenticate(email=form.cleaned_data['email'], password=form.cleaned_data['password1'])
             login(request, user)
-            return redirect('tasks:task-list')  # Redirect to task list page
-        else:
-            messages.error(request, 'Registration failed. Please correct the errors below.') #Display error message
+            return redirect('core:home')  # Redirect to the home page after successful registration
     else:
         form = CustomUserCreationForm()
     return render(request, 'users/register.html', {'form': form})
 
-def user_login(request):
+
+
+def login_view(request):
     if request.method == 'POST':
-        form = CustomUserLoginForm(request.POST)
+        form = CustomUserLoginForm(request, data=request.POST)
         if form.is_valid():
-            email_or_phone = form.cleaned_data['email_or_phone']
+            email = form.cleaned_data['username']
             password = form.cleaned_data['password']
-            user = authenticate(request, username=email_or_phone, password=password)
-            if user is not None:
-                login(request, user)
-                return redirect('tasks:task-list')  # Redirect to task list page
+            # Check if the email exists in the database
+            if CustomUser.objects.filter(email=email).exists():
+                user = authenticate(email=email, password=password)
+                if user is not None:
+                    login(request, user)
+                    return redirect('core:home')  # Redirect to home page after successful login
             else:
-                messages.error(request, 'Login failed. Please check your email/phone and password.') #Error message
+                form.add_error('username', 'This email does not exist.')
     else:
         form = CustomUserLoginForm()
     return render(request, 'users/login.html', {'form': form})
 
+
+
 @login_required
-def user_logout(request):
+def logout_view(request):
     logout(request)
-    return redirect('users:login') 
+    return redirect('core:home')
 
 @login_required
 def update_profile(request):

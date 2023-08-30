@@ -15,23 +15,19 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path,include
-import tasks.views as t
-import users.views as v
+import tasks
+import users
+import core
 from django.conf import settings
 from django.conf.urls.static import static
 
 
 
 urlpatterns = [
-    path('', t.Loader.as_view(), name='Loader'), 
-    path('home/',t.HomeView.as_view(),name="home"),
+    path('', include('core.urls')), 
     path('admin/', admin.site.urls),
     path('tasks/', include('tasks.urls')),
-    path('register/',v.register,name="register"),
-    path('login/',v.user_login,name="login"),
-    path('logout/',v.user_logout,name="logout"),
-    path('update-profile/',v.update_profile,name="update-profile")
-    # Add other URL patterns for different apps here
+    path('users/',include('users.urls')),
 ]
 
 
