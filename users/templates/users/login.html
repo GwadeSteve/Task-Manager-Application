@@ -1,10 +1,16 @@
-{% extends 'users/base.html' %}
+{% extends 'users/base_connect.html' %}
 
-{%block content%}
-<form method="post">
+{% block title %}
+Connect
+{% endblock %}
+
+{% block content %}
+<form class="input-form w3-animate-right" style="margin-bottom: 40px; font-weight: bold;" method="post">
+    <h2 class="registration-title">Login Form</h2>
     {% csrf_token %}
-    {{form.as_p}}
-    <button type="submit">Login</button>
+    <input type="email" class="input-field" placeholder="Email" name="email"> 
+    <input type="password" class="input-field" placeholder="Password" name="password"> 
+    <button type="submit" class="submit-button w3-btn">Submit</button>
+    <p class="account-text" style="margin-top: 20px;">Don't have an account yet? <a href="{% url 'users:register' %}">Create one</a></p>
 </form>
-<p style="margin-top:10px;">Don't yet have an account ? <a href="/register" style="color:blue;">Create an account</a> now</p>
-{%endblock%}
+{% endblock %}

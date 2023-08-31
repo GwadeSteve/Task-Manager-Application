@@ -1,10 +1,20 @@
-{% extends 'users/base.html' %}
+{% extends 'users/base_connect.html' %}
+
+{% block title%}
+Registration
+{%endblock%}
 
 {%block content%}
-<form method="post">
+<form class="input-form w3-animate-left" style="margin-bottom:40px;font-weight:bold;" method="post">
+    <h2 class="registration-title">Registration Form</h2>
     {% csrf_token %}
-    {{form.as_p}}
-    <button type="submit">Register</button>
+    <input type="text" class="input-field" placeholder="First name" name="{{ form.first_name.name }}">
+    <input type="text" class="input-field" placeholder="Last name" name="{{ form.last_name.name }}">
+    <input type="email" class="input-field" placeholder="Email" name="{{ form.email.name }}">
+    {{ form.gender }}
+    <input type="password" class="input-field" placeholder="Password" name="{{ form.password1.name }}">
+    <input type="password" class="input-field" placeholder="Confirm Password" name="{{ form.password2.name }}">
+    <button type="submit" class="submit-button w3-btn">Submit</button>
+    <p class="account-text" style="margin-top:20px;">Already have an account? <a href={% url 'users:login' %}>Login here instead</a></p>
 </form>
-<p>Already have an account ? <a href="/login" style="color:blue;">login</a> now</p>
 {%endblock%}

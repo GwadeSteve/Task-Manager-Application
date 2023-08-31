@@ -5,40 +5,46 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import CustomUser
 
-def register(request):
+def register_view(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            user = authenticate(request, username=user.email, password=form.cleaned_data['password1'])
+            user = form.save()  # Save the user object
+            # Authenticate the user and log them in
+            user = authenticate(email=form.cleaned_data['email'], password=form.cleaned_data['password1'])
             login(request, user)
-            return redirect('tasks:task-list')  # Redirect to task list page
-        else:
-            messages.error(request, 'Registration failed. Please correct the errors below.') #Display error message
+            return redirect('core:home')  # Redirect to the home page after successful registration
     else:
         form = CustomUserCreationForm()
     return render(request, 'users/register.html', {'form': form})
 
-def user_login(request):
+
+def login_view(request):
     if request.method == 'POST':
-        form = CustomUserLoginForm(request.POST)
+        form = CustomUserLoginForm(data=request.POST)
+        print('formulaire recuperer')
         if form.is_valid():
-            email_or_phone = form.cleaned_data['email_or_phone']
+            email = form.cleaned_data['email']
             password = form.cleaned_data['password']
-            user = authenticate(request, username=email_or_phone, password=password)
+            print("Obtenu les donnees")
+            user = authenticate(request, email=email, password=password)
             if user is not None:
                 login(request, user)
-                return redirect('tasks:task-list')  # Redirect to task list page
+                print("Success")
+                return redirect('core:home')
             else:
-                messages.error(request, 'Login failed. Please check your email/phone and password.') #Error message
+                print("oopss")
+                form.add_error('email', 'Invalid email or password.')
     else:
+        print('massah')
         form = CustomUserLoginForm()
     return render(request, 'users/login.html', {'form': form})
 
+
 @login_required
-def user_logout(request):
+def logout_view(request):
     logout(request)
-    return redirect('users:login') 
+    return redirect('core:home')
 
 @login_required
 def update_profile(request):
