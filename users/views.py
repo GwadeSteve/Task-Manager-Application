@@ -16,7 +16,7 @@ def register_view(request):
             for category_name in ['Work', 'School', 'Sports', 'Diet']:
                 Category.objects.create(name=category_name, description=f"Default category for {category_name} tasks", user=user)
             login(request, user)
-            return redirect('core:home')  # Redirect to the home page after successful registration
+            return redirect('tasks:task-category')  # Redirect to task category page
     else:
         form = CustomUserCreationForm()
     return render(request, 'users/register.html', {'form': form})
@@ -25,21 +25,16 @@ def register_view(request):
 def login_view(request):
     if request.method == 'POST':
         form = CustomUserLoginForm(data=request.POST)
-        print('formulaire recuperer')
         if form.is_valid():
             email = form.cleaned_data['email']
             password = form.cleaned_data['password']
-            print("Obtenu les donnees")
             user = authenticate(request, email=email, password=password)
             if user is not None:
                 login(request, user)
-                print("Success")
-                return redirect('core:home')
+                return redirect('tasks:task-category')
             else:
-                print("oopss")
                 form.add_error('email', 'Invalid email or password.')
     else:
-        print('massah')
         form = CustomUserLoginForm()
     return render(request, 'users/login.html', {'form': form})
 
