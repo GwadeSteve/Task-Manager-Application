@@ -5,12 +5,6 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import CustomUser
 
-def Loader(request):
-    return render(request, 'users/loading.html')
-
-def HomeView(request):
-    return render(request,'users/home.html')
-
 def register_view(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
@@ -25,25 +19,26 @@ def register_view(request):
     return render(request, 'users/register.html', {'form': form})
 
 
-
 def login_view(request):
     if request.method == 'POST':
-        form = CustomUserLoginForm(request, data=request.POST)
+        form = CustomUserLoginForm(data=request.POST)
+        print('formulaire recuperer')
         if form.is_valid():
-            email = form.cleaned_data['username']
+            email = form.cleaned_data['email']
             password = form.cleaned_data['password']
-            # Check if the email exists in the database
-            if CustomUser.objects.filter(email=email).exists():
-                user = authenticate(email=email, password=password)
-                if user is not None:
-                    login(request, user)
-                    return redirect('core:home')  # Redirect to home page after successful login
+            print("Obtenu les donnees")
+            user = authenticate(request, email=email, password=password)
+            if user is not None:
+                login(request, user)
+                print("Success")
+                return redirect('core:home')
             else:
-                form.add_error('username', 'This email does not exist.')
+                print("oopss")
+                form.add_error('email', 'Invalid email or password.')
     else:
+        print('massah')
         form = CustomUserLoginForm()
     return render(request, 'users/login.html', {'form': form})
-
 
 
 @login_required

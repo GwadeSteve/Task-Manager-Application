@@ -74,14 +74,6 @@ TEMPLATES = [
     },
 ]
 
-#Authentication backends customized
-
-AUTHENTICATION_BACKENDS = [
-    'django.contrib.auth.backends.ModelBackend',
-    'users.auth_backends.CustomUserAuthBackend',
-]
-
-
 WSGI_APPLICATION = 'TaskManager.wsgi.application'
 
 

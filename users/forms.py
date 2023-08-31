@@ -19,10 +19,14 @@ class CustomUserCreationForm(UserCreationForm):
         super().__init__(*args, **kwargs)
         self.fields['gender'].widget = forms.Select(choices=CustomUser.GENDER_CHOICES)
 
-class CustomUserLoginForm(AuthenticationForm):
-    class Meta:
-        model = CustomUser
-        fields = ('email', 'password')
+class CustomUserLoginForm(forms.Form):
+    email = forms.EmailField(
+        widget=forms.EmailInput(attrs={'autofocus': True}),
+    )
+    password = forms.CharField(
+        strip=False,
+        widget=forms.PasswordInput(attrs={'autocomplete': 'current-password'}),
+    )
 
 class CustomUserUpdateForm(forms.ModelForm):
     class Meta:
