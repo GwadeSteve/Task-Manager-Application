@@ -1,51 +1,45 @@
-from django.shortcuts import render, get_object_or_404, redirect
-from django.urls import reverse_lazy
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from django.contrib.auth.mixins import LoginRequiredMixin
-from .models import Task
-from .forms import TaskForm
-from django.views import View
+from django.shortcuts import render, redirect
+from .models import Category, Task
+from .forms import CategoryForm, TaskForm
+from django.contrib import messages
+from users.models import CustomUser
 
+def create_category_view(request):
+    if request.method == 'POST':
+        form = CategoryForm(request.POST)
+        if form.is_valid():
+            category = form.save(commit=False)
+            category.user = request.user
+            category.save()
+            messages.success(request, 'Category created successfully.')
+            return redirect('tasks:task-list')
+    else:
+        form = CategoryForm()
+    return render(request, 'tasks/create_category.html', {'form': form})
 
-class Loader(View):
-    template_name = 'tasks/loader.html'
+def create_task_view(request):
+    user = request.user
+    default_categories = Category.objects.filter(name__in=['Work', 'School', 'Sports', 'Diet'])
+    user_categories = Category.objects.filter(user=user)
+    all_categories = default_categories | user_categories
 
-    def get(self, request, *args, **kwargs):
-        return render(request, self.template_name)
-
-class HomeView(View):
-    template_name = 'tasks/home.html'
-
-    def get(self, request, *args, **kwargs):
-        return render(request, self.template_name)
+    if request.method == 'POST':
+        form = TaskForm(request.POST, request.FILES)
+        form.fields['category'].queryset = all_categories  # Limit category choices to user's categories
+        if form.is_valid():
+            task = form.save(commit=False)
+            task.user = request.user
+            task.save()
+            messages.success(request, 'Task created successfully.')
+            return redirect('core:home')
+    else:
+        form = TaskForm()
+        form.fields['category'].queryset = all_categories  # Limit category choices to user's categories
     
+    return render(request, 'tasks/create_task.html', {'form': form})
 
-class TaskListView(LoginRequiredMixin, ListView):
-    model = Task
-    template_name = 'tasks/task_list.html'
-    context_object_name = 'tasks'
-    paginate_by = 10
+def task_list_view(request):
+    return render(request,'tasks/task_list.html')
 
-class TaskDetailView(LoginRequiredMixin, DetailView):
-    model = Task
-    template_name = 'tasks/task_detail.html'
-    context_object_name = 'task'
-
-class TaskCreateView(LoginRequiredMixin, CreateView):
-    model = Task
-    form_class = TaskForm
-    template_name = 'tasks/task_form.html'
-
-    def form_valid(self, form):
-        form.instance.user = self.request.user
-        return super().form_valid(form)
-
-class TaskUpdateView(LoginRequiredMixin, UpdateView):
-    model = Task
-    form_class = TaskForm
-    template_name = 'tasks/task_form.html'
-
-class TaskDeleteView(LoginRequiredMixin, DeleteView):
-    model = Task
-    template_name = 'tasks/task_confirm_delete.html'
-    success_url = reverse_lazy('tasks:task-list')
+def task_category_view(request):
+    return render(request,'tasks/task_category.html')
