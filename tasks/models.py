@@ -1,51 +1,83 @@
-from django.core.validators import MinLengthValidator
 from django.db import models
-from django.contrib.auth import get_user_model
+from users.models import CustomUser
+from datetime import datetime
+from django.db.models import Count
 
-User = get_user_model()
-
-class Task(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    title = models.CharField(max_length=200, validators=[MinLengthValidator(1)])
-    description = models.TextField(validators=[MinLengthValidator(1)])
-    due_date = models.DateTimeField()
-    priority = models.CharField(max_length=20, choices=[('low', 'Low'), ('medium', 'Medium'), ('high', 'High')])
-    tags = models.ManyToManyField('Tag', blank=True)
-    attachments = models.ManyToManyField('Attachment', blank=True)
-    start_date = models.DateTimeField(null=True, blank=True, auto_now_add=True)
-    reminders = models.ManyToManyField('Reminder', blank=True)
-    status = models.CharField(max_length=20, choices=[('in_progress', 'In Progress'), ('completed', 'Completed'), ('postponed', 'Postponed')])
-    estimated_time = models.DurationField(null=True, blank=True)
-
-    def __str__(self):
-        return self.title
-
-    def mark_completed(self):
-        self.status = 'completed'
-        self.save()
-
-    def add_attachment(self, attachment):
-        self.attachments.add(attachment)
-        self.save()
-
-    def add_reminder(self, reminder):
-        self.reminders.add(reminder)
-        self.save()
-
-class Tag(models.Model):
-    name = models.CharField(max_length=50, unique=True)
+class Category(models.Model):
+    name = models.CharField(max_length=100)
+    description = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
 
-class Attachment(models.Model):
-    file = models.FileField(upload_to='attachments/')
+    def get_task_count(self):
+        return self.task_set.count()
+
+    def get_completed_task_count(self):
+        return self.task_set.filter(status='completed').count()
+
+    def get_pending_tasks(self):
+        return self.task_set.filter(status='pending')
+
+    def get_upcoming_due_tasks(self):
+        return self.task_set.filter(status='pending', due_date__gte=datetime.today())
+
+    def get_overdue_tasks(self):
+        return self.task_set.filter(status='pending', due_date__lt=datetime.today())
+
+    def get_task_priority_stats(self):
+        return self.task_set.values('priority').annotate(count=Count('priority'))
+
+    def get_latest_task(self):
+        return self.task_set.latest('date_creation')
+
+class Task(models.Model):
+    STATUS_CHOICES = [
+        ('completed', 'Completed'),
+        ('pending', 'Pending'),
+        ('postponed', 'Postponed'),
+    ]
+    PRIORITY_CHOICES = [
+        ('high', 'High Priority'),
+        ('medium', 'Medium Priority'),
+        ('low', 'Low Priority'),
+    ]
+
+    title = models.CharField(max_length=200)
+    description = models.TextField()
+    date_creation = models.DateField(auto_now_add=True)
+    time_creation = models.TimeField(auto_now_add=True)
+    due_date = models.DateField()
+    due_time = models.TimeField()
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    priority = models.CharField(max_length=20, choices=PRIORITY_CHOICES, default='medium')
+    attachments = models.FileField(upload_to='attachments/', blank=True, null=True)
+    reminders = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
-        return self.file.name
+        return self.title
+    
+    def is_overdue(self):
+        now = datetime.now()
+        due_datetime = datetime.combine(self.due_date, self.due_time)
+        return now > due_datetime
 
-class Reminder(models.Model):
-    remind_at = models.DateTimeField()
+    def days_until_due(self):
+        now = datetime.now()
+        due_datetime = datetime.combine(self.due_date, self.due_time)
+        timedelta = due_datetime - now
+        return timedelta.days if timedelta.days >= 0 else 0
 
-    def __str__(self):
-        return str(self.remind_at)
+    def is_today_due(self):
+        now = datetime.now()
+        return self.due_date == now.date()
+
+    def get_related_tasks(self):
+        return Task.objects.filter(category=self.category)
+
+    def get_attachment_count(self):
+        return self.attachments.count()

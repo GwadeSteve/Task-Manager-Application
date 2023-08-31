@@ -4,6 +4,7 @@ from .forms import CustomUserCreationForm, CustomUserLoginForm,CustomUserUpdateF
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import CustomUser
+from tasks.models import Category
 
 def register_view(request):
     if request.method == 'POST':
@@ -12,6 +13,8 @@ def register_view(request):
             user = form.save()  # Save the user object
             # Authenticate the user and log them in
             user = authenticate(email=form.cleaned_data['email'], password=form.cleaned_data['password1'])
+            for category_name in ['Work', 'School', 'Sports', 'Diet']:
+                Category.objects.create(name=category_name, description=f"Default category for {category_name} tasks", user=user)
             login(request, user)
             return redirect('core:home')  # Redirect to the home page after successful registration
     else:
