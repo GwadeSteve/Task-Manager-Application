@@ -2,10 +2,12 @@ from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
 from .forms import CustomUserCreationForm, CustomUserLoginForm,CustomUserUpdateForm
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.cache import never_cache
 from django.contrib import messages
 from .models import CustomUser
 from tasks.models import Category
 
+@never_cache
 def register_view(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
@@ -16,30 +18,25 @@ def register_view(request):
             for category_name in ['Work', 'School', 'Sports', 'Diet']:
                 Category.objects.create(name=category_name, description=f"Default category for {category_name} tasks", user=user)
             login(request, user)
-            return redirect('core:home')  # Redirect to the home page after successful registration
+            return redirect('tasks:task-list')  # Redirect to task category page
     else:
         form = CustomUserCreationForm()
     return render(request, 'users/register.html', {'form': form})
 
-
+@never_cache
 def login_view(request):
     if request.method == 'POST':
         form = CustomUserLoginForm(data=request.POST)
-        print('formulaire recuperer')
         if form.is_valid():
             email = form.cleaned_data['email']
             password = form.cleaned_data['password']
-            print("Obtenu les donnees")
             user = authenticate(request, email=email, password=password)
             if user is not None:
                 login(request, user)
-                print("Success")
-                return redirect('core:home')
+                return redirect('tasks:task-list')
             else:
-                print("oopss")
                 form.add_error('email', 'Invalid email or password.')
     else:
-        print('massah')
         form = CustomUserLoginForm()
     return render(request, 'users/login.html', {'form': form})
 
