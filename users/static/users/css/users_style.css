@@ -96,3 +96,49 @@ body {
     font-weight: 500;
     font-size: 16px;
 }
+
+#messages {
+    background: transparent;
+    padding: 15px;
+    height: 60px;
+    overflow: hidden;
+    min-width: 70%;
+}
+
+#messages div.alert.alert-success p {
+    background: #ffffff3a;
+    font-weight: 700;
+    color: rgb(42, 159, 44);
+    font-size: 16px;
+    padding: 10px;
+    text-align: center;
+}
+
+#messages div.alert.alert-error p {
+    background: #ffffff3a;
+    font-weight: 700;
+    font-size: 16px;
+    color: red;
+    padding: 10px;
+    text-align: center;
+}
+
+@media screen and (max-width:786px) {
+    .Form {
+        height: 100%;
+        width: 100%;
+    }
+}
+
+@media screen and (max-width:410px) {
+    #messages {
+        height: 100px;
+        width: 100%;
+    }
+    #messages div.alert.alert-success p {
+        font-size: 13px;
+    }
+    #messages div.alert.alert-error p {
+        font-size: 13px;
+    }
+}

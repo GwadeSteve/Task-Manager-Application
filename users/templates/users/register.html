@@ -16,5 +16,14 @@ Registration
     <input type="password" class="input-field" placeholder="Confirm Password" name="{{ form.password2.name }}">
     <button type="submit" class="submit-button w3-btn">Submit</button>
     <p class="account-text" style="margin-top:20px;">Already have an account? <a href={% url 'users:login' %}>Login here instead</a></p>
+    {% if messages %}
+    <div id="messages">
+        {% for message in messages %}
+        <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+            <p>{{ message }}<p>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
 </form>
 {%endblock%}

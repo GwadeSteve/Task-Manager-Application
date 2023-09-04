@@ -12,5 +12,14 @@ Connect
     <input type="password" class="input-field" placeholder="Password" name="password"> 
     <button type="submit" class="submit-button w3-btn">Submit</button>
     <p class="account-text" style="margin-top: 20px;">Don't have an account yet? <a href="{% url 'users:register' %}">Create one</a></p>
+    {% if messages %}
+    <div id="messages">
+        {% for message in messages %}
+        <div class="alert {% if message.tags %} alert-{{ message.tags }} {% endif %}">
+            <p>{{ message }}</p>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
 </form>
 {% endblock %}
