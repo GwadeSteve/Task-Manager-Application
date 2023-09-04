@@ -7,3 +7,6 @@ def loading_view(request):
 
 def home_view(request):
     return render( request, 'core/home.html' )
+
+def help(request):
+    return render( request, 'core/help.html' )

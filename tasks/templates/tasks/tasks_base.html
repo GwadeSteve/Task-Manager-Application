@@ -42,19 +42,19 @@
                 <i class='material-icons'>assignment_add</i>
                 <p>Task</p>
             </a>
-            <a href="#" data-section="calendar">
+            <a href={% url 'tasks:calendar' %} data-section="calendar">
                 <i class='material-icons'>calendar_month</i>
                 <p>Calendar</p>
             </a>
-            <a href="#" data-section="stats">
+            <a href={% url 'tasks:stats' %} data-section="stats">
                 <i class='bx bx-bar-chart-alt-2'></i>
                 <p>Stats</p>
             </a>
-            <a href="#" data-section="help">
+            <a href={% url 'core:help' %} data-section="help">
                 <i class='material-icons'>help</i>
                 <p>Help</p>
             </a>
-            <a href="#" data-section="profile">
+            <a href={% url 'users:profile' %} data-section="profile">
                 <i class='material-icons'>person</i>
                 <p>Profile</p>
             </a>
@@ -70,7 +70,7 @@
         <div class="bar-search">
             <div class="magic">
                 <i class='bx bx-menu' id="menu-btn"></i>
-                <h1>Hello {{user_name}}</h1>
+                <h1 style="display:flex;">Welcome, <span style="color:#12229D;">{{user.first_name}}</span></h1>
             </div>
             <div class="search-container">
                 <input type="text" name="search" placeholder="Search..." class="search-input">
@@ -80,36 +80,36 @@
             </div>
         </div>
         <div class="section active" id="summary">
-            <h1>Here will be my task list</h1>
-            
+            {% block summary%}
+            {% endblock %}
         </div>
         <div class="section" id="create-category">
-            <h1>Welcome to the category creation!</h1>
-            <p>This is the cat creation section of my website.</p>
+            {% block create-category %}
+            {% endblock %}
         </div>
         <div class="section" id="create-task">
-            <h1>Welcome to the task-creation page!</h1>
-            <p>This is the task creation section of my website.</p>
+            {% block create-task %}
+            {% endblock %}
         </div>
         <div class="section" id="calendar">
-            <h1>Welcome to the calendar page!</h1>
-            <p>This is the calendar section of my website.</p>
+            {% block calendar %}
+            {% endblock %}
         </div>
         <div class="section" id="stats">
-            <h1>Welcome to the stats page!</h1>
-            <p>This is the stats section of my website.</p>
+            {% block stats %}
+            {% endblock %}
         </div>
         <div class="section" id="help">
-            <h1>Welcome to the help page!</h1>
-            <p>This is the help section of my website.</p>
+            {% block help %}
+            {% endblock %}
         </div>
         <div class="section" id="profile">
-            <h1>Welcome to the profile page!</h1>
-            <p>This is the profile section of my website.</p>
+            {% block profile %}
+            {% endblock %}
         </div>
         <div class="section" id="logout">
-            <h1>Welcome to the logout page!</h1>
-            <p>This is the logout section of my website.</p>
+            {% block logout %}
+            {% endblock %}
         </div>
     </div>
 
