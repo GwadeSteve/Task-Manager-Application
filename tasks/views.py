@@ -55,16 +55,16 @@ def create_task_view(request):
     all_categories = default_categories | user_categories
 
     if request.method == 'POST':
-        form = TaskForm(request.POST, request.FILES)
+        form = TaskForm(request.POST, request.FILES, user=user)
         form.fields['category'].queryset = all_categories  # Limit category choices to user's categories
         if form.is_valid():
             task = form.save(commit=False)
             task.user = request.user
             task.save()
             messages.success(request, 'Task created successfully.')
-            return redirect('core:home')
+            return redirect('tasks:task-list')
     else:
-        form = TaskForm()
+        form = TaskForm(user=request.user)
         form.fields['category'].queryset = all_categories  # Limit category choices to user's categories
     
     return render(request, 'tasks/create_task.html', {'form': form})

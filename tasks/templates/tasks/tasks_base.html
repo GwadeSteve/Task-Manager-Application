@@ -79,7 +79,7 @@
                 </a>
             </div>
         </div>
-        <div class="section active" id="summary">
+        <div class="section" id="summary">
             {% block summary%}
             {% endblock %}
         </div>
@@ -114,6 +114,21 @@
     </div>
 
     <script src={% static 'tasks/js/base.js' %}></script>
+    <script>
+        // Get the current URL path
+        const currentPath = window.location.pathname;
+    
+        // Find the link that matches the current URL path
+        links.forEach(link => {
+            if (link.getAttribute('href') === currentPath) {
+                link.classList.add('active');
+                const sectionId = link.dataset.section;
+                const section = document.querySelector(`#${sectionId}`);
+                section.classList.add('active');
+            }
+        });
+    </script>
+
 </body>
 
 </html>

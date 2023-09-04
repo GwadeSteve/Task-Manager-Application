@@ -20,6 +20,7 @@ def register_view(request):
                 Category.objects.create(name=category_name, description=f"Default category for {category_name} tasks", user=user)
             login(request, user)
             messages.success(request,'Registration succesfull.')
+            time.sleep(5)
             return redirect('tasks:task-list')  # Redirect to task category page
         else:
             messages.error(request, 'Invalid registration, Checkout email and password')
@@ -38,6 +39,7 @@ def login_view(request):
             if user is not None:
                 login(request, user)
                 messages.success(request,'Logged in succesfully.')
+                time.sleep(5)
                 return redirect('tasks:task-list')
             else:
                 messages.error(request, 'Invalid credentials, Please check email and password')
