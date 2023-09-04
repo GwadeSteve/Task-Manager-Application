@@ -6,6 +6,7 @@ from django.views.decorators.cache import never_cache
 from django.contrib import messages
 from .models import CustomUser
 from tasks.models import Category
+import time
 
 @never_cache
 def register_view(request):
@@ -18,7 +19,11 @@ def register_view(request):
             for category_name in ['Work', 'School', 'Sports', 'Diet']:
                 Category.objects.create(name=category_name, description=f"Default category for {category_name} tasks", user=user)
             login(request, user)
-            return redirect('tasks:task-list')  # Redirect to task category page
+            messages.success(request,'Registration succesfull.')
+            user_name = user.first_name
+            return redirect('tasks:task-list',user_name=user.first_name)  # Redirect to task category page
+        else:
+            messages.error(request, 'Invalid registration, Please checkout again')
     else:
         form = CustomUserCreationForm()
     return render(request, 'users/register.html', {'form': form})
@@ -33,9 +38,11 @@ def login_view(request):
             user = authenticate(request, email=email, password=password)
             if user is not None:
                 login(request, user)
-                return redirect('tasks:task-list')
+                messages.success(request,'Logged in succesfully.')
+                user_name = user.first_name
+                return redirect('tasks:task-list',user_name=user.first_name)
             else:
-                form.add_error('email', 'Invalid email or password.')
+                messages.error(request, 'Invalid credentials, Please check email and password.')
     else:
         form = CustomUserLoginForm()
     return render(request, 'users/login.html', {'form': form})
