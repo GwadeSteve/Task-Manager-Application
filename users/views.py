@@ -52,6 +52,10 @@ def logout_view(request):
     return redirect('core:home')
 
 @login_required
+def profile(request):
+    return render(request,'users/profile.html')
+
+@login_required
 def update_profile(request):
     if request.method == 'POST':
         form = CustomUserUpdateForm(request.POST, instance=request.user)

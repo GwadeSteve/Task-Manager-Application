@@ -71,8 +71,16 @@ def create_task_view(request):
 
 @login_required
 def task_list_view(request):
-    return render(request,'tasks/tasks_base.html')
+    return render(request,'tasks/task_list.html')
 
 @login_required
 def task_category_view(request):
     return render(request,'tasks/task_category.html')
+
+@login_required
+def calendar(request):
+    return render(request,'tasks/calendar.html')
+
+@login_required
+def stats(request):
+    return render(request,'tasks/stats.html')
