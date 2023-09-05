@@ -70,7 +70,7 @@
         <div class="bar-search">
             <div class="magic">
                 <i class='bx bx-menu' id="menu-btn"></i>
-                <h1 style="display:flex;">Welcome, <span style="color:#12229D;">{{user.first_name}}</span></h1>
+                <h1 style="display:flex;">Welcome, <p style="color:#12229D;z-index=-1";>{{user.first_name}}</p></h1>
             </div>
             <div class="search-container">
                 <input type="text" name="search" placeholder="Search..." class="search-input">
@@ -114,20 +114,6 @@
     </div>
 
     <script src={% static 'tasks/js/base.js' %}></script>
-    <script>
-        // Get the current URL path
-        const currentPath = window.location.pathname;
-    
-        // Find the link that matches the current URL path
-        links.forEach(link => {
-            if (link.getAttribute('href') === currentPath) {
-                link.classList.add('active');
-                const sectionId = link.dataset.section;
-                const section = document.querySelector(`#${sectionId}`);
-                section.classList.add('active');
-            }
-        });
-    </script>
 
 </body>
 
