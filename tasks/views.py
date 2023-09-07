@@ -42,7 +42,7 @@ def create_category_view(request):
             category.user = request.user
             category.save()
             messages.success(request, 'Category created successfully.')
-            return redirect('tasks:task-category')
+            return redirect('tasks:task-list')
     else:
         form = CategoryForm()
     return render(request, 'tasks/create_category.html', {'form': form})
@@ -71,11 +71,15 @@ def create_task_view(request):
 
 @login_required
 def task_list_view(request):
-    return render(request,'tasks/task_list.html')
+    categories = Category.objects.filter(user=request.user)
+    tasks = Task.objects.filter(user=request.user)
+    return render(request,'tasks/task_list.html',{'categories':categories,'tasks':tasks,})
 
 @login_required
 def task_category_view(request):
-    return render(request,'tasks/task_category.html')
+    categories = Category.objects.filter(user=request.user)
+    tasks = Task.objects.filter(user=request.user)
+    return render(request,'tasks/task_category.html',{'categories':categories,'tasks':tasks,})
 
 @login_required
 def calendar(request):

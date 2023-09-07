@@ -38,6 +38,7 @@ class Task(models.Model):
         ('completed', 'Completed'),
         ('pending', 'Pending'),
         ('postponed', 'Postponed'),
+        ('late','Late'),
     ]
     PRIORITY_CHOICES = [
         ('high', 'High Priority'),
