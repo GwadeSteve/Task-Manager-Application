@@ -4,26 +4,72 @@
 Registration
 {%endblock%}
 
-{%block content%}
+{% block content %}
 <form class="input-form w3-animate-left" style="margin-bottom:40px;font-weight:bold;" method="post">
     <h2 class="registration-title">Registration Form</h2>
     {% csrf_token %}
-    <input type="text" class="input-field" placeholder="First name" name="{{ form.first_name.name }}">
-    <input type="text" class="input-field" placeholder="Last name" name="{{ form.last_name.name }}">
-    <input type="email" class="input-field" placeholder="Email" name="{{ form.email.name }}">
-    {{ form.gender }}
-    <input type="password" class="input-field" placeholder="Password" name="{{ form.password1.name }}">
-    <input type="password" class="input-field" placeholder="Confirm Password" name="{{ form.password2.name }}">
+    
+    <!-- First Name -->
+    <div class="form-group">
+        <input type="text" class="form-control" placeholder="First name" name="{{ form.first_name.name }}" required>
+        <div class="valid-feedback">Looks good!</div>
+        <div class="invalid-feedback">Please provide a valid first name.</div>
+    </div>
+    
+    <!-- Last Name -->
+    <div class="form-group">
+        <input type="text" class="form-control" placeholder="Last name" name="{{ form.last_name.name }}" required>
+        <div class="valid-feedback">Looks good!</div>
+        <div class="invalid-feedback">Please provide a valid last name.</div>
+    </div>
+    
+    <!-- Email -->
+    <div class="form-group">
+        <input type="email" class="form-control" placeholder="Email" name="{{ form.email.name }}" required>
+        <div class="valid-feedback">Looks good!</div>
+        <div class="invalid-feedback">Please provide a valid email.</div>
+    </div>
+    
+    <!-- Gender -->
+    <div class="form-group">
+        <select class="form-control" id="gender" name="gender" required>
+            <option value="" selected disabled>Select your gender</option>
+            <option value="M">Male</option>
+            <option value="F">Female</option>
+            <option value="O">Other</option>
+        </select>
+        <div class="valid-feedback">Looks good!</div>
+        <div class="invalid-feedback">Please select your gender.</div>
+    </div>
+    
+    <!-- Passwords -->
+    <div class="form-group">
+        <input type="password" class="form-control" id="id_password1" placeholder="Password" name="{{ form.password1.name }}" required>
+        <div class="valid-feedback">Password meets the requirements.</div>
+        <div class="invalid-feedback">Password must be at least 8 characters long and different from other details.</div>
+    </div>
+    <div class="form-group">
+        <input type="password" class="form-control" id="id_password2" placeholder="Confirm Password" name="{{ form.password2.name }}" required>
+        <div class="valid-feedback">Passwords match!</div>
+        <div class="invalid-feedback">Passwords do not match.</div>
+    </div>
+    
+    <!-- Submit Button -->
     <button type="submit" class="submit-button w3-btn">Submit</button>
+    
+    <!-- Already have an account -->
     <p class="account-text" style="margin-top:20px;">Already have an account? <a href={% url 'users:login' %}>Login here instead</a></p>
+
+    <!--Messages from django-->
     {% if messages %}
     <div id="messages">
         {% for message in messages %}
-        <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
-            <p>{{ message }}<p>
+        <div class="alert p-10 {% if message.tags %} alert-{{ message.tags }} {% endif %}">
+            <p>{{ message }}</p>
         </div>
         {% endfor %}
     </div>
     {% endif %}
+
 </form>
-{%endblock%}
+{% endblock %}

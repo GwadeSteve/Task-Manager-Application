@@ -100,27 +100,24 @@ body {
 #messages {
     background: transparent;
     padding: 15px;
-    height: 60px;
     overflow: hidden;
     min-width: 70%;
 }
 
 #messages div.alert.alert-success p {
-    background: #ffffff3a;
     font-weight: 700;
     color: rgb(42, 159, 44);
     font-size: 16px;
-    padding: 10px;
     text-align: center;
+    background: none;
 }
 
 #messages div.alert.alert-error p {
-    background: #ffffff3a;
     font-weight: 700;
     font-size: 16px;
     color: red;
-    padding: 10px;
     text-align: center;
+    background: none;
 }
 
 @media screen and (max-width:786px) {
@@ -132,7 +129,6 @@ body {
 
 @media screen and (max-width:410px) {
     #messages {
-        height: 100px;
         width: 100%;
     }
     #messages div.alert.alert-success p {

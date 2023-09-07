@@ -16,11 +16,10 @@ def register_view(request):
             user = form.save()  # Save the user object
             # Authenticate the user and log them in
             user = authenticate(email=form.cleaned_data['email'], password=form.cleaned_data['password1'])
+            messages.success(request,'Registration succesfull.')
             for category_name in ['Work', 'School', 'Sports', 'Diet']:
                 Category.objects.create(name=category_name, description=f"Default category for {category_name} tasks", user=user)
             login(request, user)
-            messages.success(request,'Registration succesfull.')
-            time.sleep(5)
             return redirect('tasks:task-list')  # Redirect to task category page
         else:
             messages.error(request, 'Invalid registration, Checkout email and password')
@@ -37,9 +36,8 @@ def login_view(request):
             password = form.cleaned_data['password']
             user = authenticate(request, email=email, password=password)
             if user is not None:
-                login(request, user)
                 messages.success(request,'Logged in succesfully.')
-                time.sleep(5)
+                login(request, user)
                 return redirect('tasks:task-list')
             else:
                 messages.error(request, 'Invalid credentials, Please check email and password')

@@ -8,14 +8,30 @@ Connect
 <form class="input-form w3-animate-right" style="margin-bottom: 40px; font-weight: bold;" method="post">
     <h2 class="registration-title">Login Form</h2>
     {% csrf_token %}
-    <input type="email" class="input-field" placeholder="Email" name="email"> 
-    <input type="password" class="input-field" placeholder="Password" name="password"> 
+    
+    <!-- Email -->
+    <div class="form-group">
+        <input type="email" class="form-control" placeholder="Email" name="email" required>
+        <div class="valid-feedback">Looks good!</div>
+        <div class="invalid-feedback">Please provide a valid email.</div>
+    </div>
+    
+    <!-- Password -->
+    <div class="form-group">
+        <input type="password" class="form-control" placeholder="Password" name="password" required>
+    </div>
+    
+    <!-- Submit Button -->
     <button type="submit" class="submit-button w3-btn">Submit</button>
+    
+    <!-- Don't have an account -->
     <p class="account-text" style="margin-top: 20px;">Don't have an account yet? <a href="{% url 'users:register' %}">Create one</a></p>
+
+    <!--Messages from django-->
     {% if messages %}
     <div id="messages">
         {% for message in messages %}
-        <div class="alert {% if message.tags %} alert-{{ message.tags }} {% endif %}">
+        <div class="alert p-10 {% if message.tags %} alert-{{ message.tags }} {% endif %}">
             <p>{{ message }}</p>
         </div>
         {% endfor %}
