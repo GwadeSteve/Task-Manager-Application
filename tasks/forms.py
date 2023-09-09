@@ -14,7 +14,7 @@ class TaskForm(forms.ModelForm):
         
     class Meta:
         model = Task
-        fields = ['title', 'description', 'due_date', 'due_time', 'category', 'status', 'priority', 'attachments', 'reminders']
+        fields = [ 'category','title', 'description', 'due_date', 'due_time', 'status', 'priority', 'attachments', 'reminders']
 
 class EditCategoryForm(forms.ModelForm):
     class Meta:
@@ -28,7 +28,7 @@ class EditTaskForm(forms.ModelForm):
 
     class Meta:
         model = Task
-        fields = ['title', 'description', 'due_date', 'due_time', 'category', 'status', 'priority', 'attachments', 'reminders']
+        fields = ['category','title', 'description', 'due_date', 'due_time', 'status', 'priority', 'attachments', 'reminders']
 
 class TaskFilterForm(forms.Form):
     STATUS_CHOICES = [

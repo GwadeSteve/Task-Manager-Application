@@ -17,8 +17,8 @@ def register_view(request):
             # Authenticate the user and log them in
             user = authenticate(email=form.cleaned_data['email'], password=form.cleaned_data['password1'])
             messages.success(request,'Registration succesfull.')
-            for category_name in ['Work', 'School', 'Sports', 'Diet']:
-                Category.objects.create(name=category_name, description=f"Default category for {category_name} tasks", user=user)
+            for category_name in ['Work', 'Sports', 'Diet']:
+                Category.objects.create(name=category_name, description=f"This is the default category created for you to manage your {category_name} tasks", user=user)
             login(request, user)
             return redirect('tasks:task-list')  # Redirect to task category page
         else:
