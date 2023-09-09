@@ -4,8 +4,8 @@ from datetime import datetime
 from django.db.models import Count
 
 class Category(models.Model):
-    name = models.CharField(max_length=100)
-    description = models.TextField()
+    name = models.CharField(max_length=50)
+    description = models.TextField(max_length=250)
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
 
@@ -46,8 +46,8 @@ class Task(models.Model):
         ('low', 'Low Priority'),
     ]
 
-    title = models.CharField(max_length=200)
-    description = models.TextField()
+    title = models.CharField(max_length=50)
+    description = models.TextField(max_length=250)
     date_creation = models.DateField(auto_now_add=True)
     time_creation = models.TimeField(auto_now_add=True)
     due_date = models.DateField()

@@ -4,11 +4,17 @@ from .forms import CategoryForm, TaskForm,EditTaskForm
 from django.contrib import messages
 from users.models import CustomUser
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseBadRequest
 
 @login_required
 def task_detail_view(request, task_id):
     task = get_object_or_404(Task, id=task_id, user=request.user)
     return render(request, 'tasks/task_detail.html', {'task': task})
+
+@login_required
+def category_detail_view(request, category_id):
+    category = get_object_or_404(Category, id=category_id, user=request.user)
+    return render(request, 'tasks/category_details.html', {'category': category})
 
 @login_required
 def edit_task_view(request, task_id):
@@ -50,22 +56,22 @@ def create_category_view(request):
 @login_required
 def create_task_view(request):
     user = request.user
-    default_categories = Category.objects.filter(name__in=['Work', 'School', 'Sports', 'Diet'])
     user_categories = Category.objects.filter(user=user)
-    all_categories = default_categories | user_categories
-
+    
     if request.method == 'POST':
-        form = TaskForm(request.POST, request.FILES, user=user)
-        form.fields['category'].queryset = all_categories  # Limit category choices to user's categories
+        form = TaskForm(user=user, data=request.POST, files=request.FILES)
         if form.is_valid():
+            category_id = request.POST.get('category')
+            category = get_object_or_404(Category, id=category_id, user=user)
+            form.instance.category = category
             task = form.save(commit=False)
             task.user = request.user
             task.save()
             messages.success(request, 'Task created successfully.')
             return redirect('tasks:task-list')
     else:
-        form = TaskForm(user=request.user)
-        form.fields['category'].queryset = all_categories  # Limit category choices to user's categories
+        form = TaskForm(user=user)
+        form.fields['category'].queryset = user_categories
     
     return render(request, 'tasks/create_task.html', {'form': form})
 
