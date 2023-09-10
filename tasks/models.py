@@ -17,9 +17,27 @@ class Category(models.Model):
 
     def get_completed_task_count(self):
         return self.task_set.filter(status='completed').count()
+    
+    def get_completion_count(self):
+        Counts = {
+            'completed':self.task_set.filter(status='completed').count(),
+            'pending':self.task_set.filter(status='pending').count(),
+            'late':self.task_set.filter(status='late').count(),
+            'postponed':self.task_set.filter(status='postponed').count(),
+        }
+        return Counts
 
+    def get_completed_tasks(self):
+        return self.task_set.filter(status='completed')
+    
     def get_pending_tasks(self):
         return self.task_set.filter(status='pending')
+    
+    def get_late_tasks(self):
+        return self.task_set.filter(status='late')
+    
+    def get_postponed_tasks(self):
+        return self.task_set.filter(status='postponed')
 
     def get_upcoming_due_tasks(self):
         return self.task_set.filter(status='pending', due_date__gte=datetime.today())

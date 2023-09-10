@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect,get_object_or_404
 from .models import Category, Task
-from .forms import CategoryForm, TaskForm,EditTaskForm
+from .forms import CategoryForm, TaskForm,EditTaskForm,EditCategoryForm
 from django.contrib import messages
 from users.models import CustomUser
 from django.contrib.auth.decorators import login_required
@@ -30,6 +30,21 @@ def edit_task_view(request, task_id):
     return render(request, 'tasks/edit_task.html', {'form': form, 'task': task})
 
 @login_required
+def edit_category_view(request,category_id):
+    user = request.user
+    category = get_object_or_404(Category,id=category_id,user=user)
+    if request.method == 'POST':
+        form = EditCategoryForm(instance=category , data=request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('tasks:category-detail',category_id=category.id)
+    else:
+        form = EditCategoryForm(instance=category)
+
+    return render(request,'tasks/edit_category.html',{'form':form,'category':category})     
+
+
+@login_required
 def delete_task_view(request, task_id):
     task = get_object_or_404(Task, id=task_id, user=request.user)
 
@@ -38,6 +53,16 @@ def delete_task_view(request, task_id):
         return redirect('tasks:task-list')
 
     return render(request, 'tasks/delete_task.html', {'task': task})
+
+@login_required
+def delete_category_view(request, category_id):
+    category = get_object_or_404(Category, id=category_id, user=request.user)
+
+    if request.method == 'POST':
+        category.delete()
+        return redirect('tasks:task-list')
+
+    return render(request, 'tasks/delete_task.html', {'category':category})
 
 @login_required
 def create_category_view(request):

@@ -5,11 +5,11 @@
 </head>
 <body>
     <h1>Delete Task</h1>
-    <p>Are you sure you want to delete "{{ task.title }}"?</p>
+    <p>Are you sure you want to delete "{{ category.name }}"?</p>
     <form method="post">
         {% csrf_token %}
         <button type="submit">Delete</button>
     </form>
-    <a href="{% url 'tasks:task-detail' %}">Cancel</a>
+    <a href="{% url 'tasks:category-detail' %}">Cancel</a>
 </body>
 </html>
