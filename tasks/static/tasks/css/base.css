@@ -83,6 +83,7 @@ body {
     flex-direction: row;
     align-items: center;
     color: #fff;
+    padding-right: 15px;
 }
 
 .search-container {
@@ -428,7 +429,7 @@ svg:hover {
     font-size: 16px;
 }
 
-.card>a {
+.categories .card {
     height: 300px;
     display: flex;
     flex-direction: column;
@@ -463,6 +464,13 @@ svg:hover {
 
 .card-head span:hover {
     background: #d1d1d15b;
+}
+
+.card a {
+    color: var(--primary-blue);
+    font-size: 14px;
+    padding: 7px;
+    border-bottom: 1px solid rgba(0, 0, 255, 0.281);
 }
 
 .card-footer {
@@ -634,4 +642,80 @@ option,
 #create-task {
     padding: 20px;
     margin-top: 10px;
+}
+
+
+/*Task detail css*/
+
+#task-detail {
+    padding: 20px;
+    margin-top: 10px;
+}
+
+#task-detail {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+}
+
+#task-detail .container {
+    cursor: pointer;
+}
+
+#task-detail .container input {
+    display: none;
+}
+
+#task-detail .container svg {
+    overflow: visible;
+}
+
+#task-detail .path {
+    fill: none;
+    stroke: var(--primary-blue);
+    stroke-width: 6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: stroke-dasharray 0.5s ease, stroke-dashoffset 0.5s ease;
+    stroke-dasharray: 241 9999999;
+    stroke-dashoffset: 0;
+}
+
+#task-detail .container input:checked~svg .path {
+    stroke-dasharray: 70.5096664428711 9999999;
+    stroke-dashoffset: -262.2723388671875;
+}
+
+.Edit {
+    padding: 12px;
+    background: #379C2F;
+    border: none;
+    border-radius: 5px;
+    color: #FFF;
+    margin-top: 10px;
+    font-weight: 800;
+}
+
+.Edit {
+    padding: 12px;
+    background: var(--task-priority-high);
+    border: none;
+    border-radius: 5px;
+    color: #FFF;
+    margin-top: 10px;
+    font-weight: 800;
+}
+
+
+/*Category detail css*/
+
+#category-detail {
+    padding: 20px;
+    margin-top: 10px;
+}
+
+#category-detail {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
 }
