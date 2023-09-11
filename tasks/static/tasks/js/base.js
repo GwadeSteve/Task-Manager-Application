@@ -5,6 +5,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const sections = document.querySelectorAll('.section');
     const menuBtn = document.querySelector('#menu-btn');
     const mobileBg = document.querySelector('.magic i');
+    const task_detail = document.querySelector('#task-detail');
+    const category_detail = document.querySelector('#category-detail');
     let isActive = false;
 
     // Function to update the active link based on the current URL

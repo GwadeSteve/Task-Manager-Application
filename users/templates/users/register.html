@@ -64,7 +64,7 @@ Registration
     {% if messages %}
     <div id="messages">
         {% for message in messages %}
-        <div class="alert p-10 {% if message.tags %} alert-{{ message.tags }} {% endif %}">
+        <div class="Alert {% if message.tags %} Alert-{{ message.tags }} {% endif %}">
             <p>{{ message }}</p>
         </div>
         {% endfor %}

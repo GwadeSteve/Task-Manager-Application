@@ -10,6 +10,6 @@
         {% csrf_token %}
         <button type="submit">Delete</button>
     </form>
-    <a href="{% url 'tasks:task-detail' %}">Cancel</a>
+    <a href="{% url 'tasks:task-detail' task.id %}">Cancel</a>
 </body>
 </html>

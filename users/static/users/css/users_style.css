@@ -104,7 +104,7 @@ body {
     min-width: 70%;
 }
 
-#messages div.alert.alert-success p {
+#messages div.Alert.Alert-success p {
     font-weight: 700;
     color: rgba(42, 159, 44, 0);
     font-size: 16px;
@@ -112,7 +112,7 @@ body {
     background: none;
 }
 
-#messages div.alert.alert-error p {
+#messages div.Alert.Alert-error p {
     font-weight: 700;
     font-size: 16px;
     color: red;
@@ -131,10 +131,10 @@ body {
     #messages {
         width: 100%;
     }
-    #messages div.alert.alert-success p {
+    #messages div.Alert.Alert-success p {
         font-size: 13px;
     }
-    #messages div.alert.alert-error p {
+    #messages div.Alert.Alert-error p {
         font-size: 13px;
     }
 }
