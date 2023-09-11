@@ -2,14 +2,19 @@
 
 {% block delete_category%}
     <div class="details">
-        <h1>Delete Task</h1>
+        <h1>Delete Category</h1>
         <div class="text">
-            <p>Are you sure you want to delete "{{ category.name }}"?</p>
+            <p style="border-bottom:none; line-height:165%;">Are you sure you want to delete "{{ category.name }}"?<br> After deleting there is no way to recover category, files and task attached to it. Click delete button to delete category.</p>
         </div>
+    </div>
+    <div class="others">
         <form method="post">
+            <a href="{% url 'tasks:category-detail' category.id %}" class="Edit">Cancel</a>
             {% csrf_token %}
-            <button type="submit">Delete</button>
+            <button type="submit" class="Delete">Delete</button>
         </form>
-        <a href="{% url 'tasks:category-detail' category.id %}" class="Edit">Cancel</a>
     </div>
 {% endblock%}
+
+
+

@@ -52,12 +52,12 @@
     {% for category in categories %}
         <div class="card">
             <div class="card-head">
-                <p><strong>{{ category.name }}</strong></p>
+                <p><strong>{{ category.name|slice:":18" }}{% if category.name|length > 18 %}...{%endif%}</strong></p>
                 <span class="material-symbols-outlined" id="category-menu">
                     more_vert
                 </span>
             </div>
-            <p class="Description">{{ category.description }}</p>
+            <p class="Description">{{ category.description|slice:":75" }}{% if category.description|length > 75 %}...{% endif %}</p>
             <p class="stats"><strong>Completed : </strong> {{ category.get_completed_task_count }}/{{ category.get_task_count }}</p>
             <a href="{% url 'tasks:category-detail' category.id %}">View</a>
             <p class="card-footer">Created : {{ category.created_at|date:"d F Y \\a\\t H:i" }}</p>
