@@ -644,35 +644,28 @@ option,
     margin-top: 10px;
 }
 
-
-/*Task detail css*/
-
-#task-detail {
+#detail {
     padding: 20px;
-    margin-top: 10px;
-}
-
-#task-detail {
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
 }
 
-#task-detail .container {
+#detail .container {
     cursor: pointer;
 }
 
-#task-detail .container input {
+#detail .container input {
     display: none;
 }
 
-#task-detail .container svg {
+#detail .container svg {
     overflow: visible;
 }
 
-#task-detail .path {
+#detail .path-c {
     fill: none;
-    stroke: var(--primary-blue);
+    stroke: var(--task-completed-green);
     stroke-width: 6;
     stroke-linecap: round;
     stroke-linejoin: round;
@@ -681,41 +674,114 @@ option,
     stroke-dashoffset: 0;
 }
 
-#task-detail .container input:checked~svg .path {
+#detail .path-p {
+    fill: none;
+    stroke: var(--task-postponed-yellow);
+    stroke-width: 6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: stroke-dasharray 0.5s ease, stroke-dashoffset 0.5s ease;
+    stroke-dasharray: 241 9999999;
+    stroke-dashoffset: 0;
+}
+
+#detail .container input:checked~svg .path-c,
+#detail .container input:checked~svg .path-p {
     stroke-dasharray: 70.5096664428711 9999999;
     stroke-dashoffset: -262.2723388671875;
 }
 
 .Edit {
     padding: 12px;
-    background: #379C2F;
+    background: #2f7b2a;
     border: none;
     border-radius: 5px;
     color: #FFF;
     margin-top: 10px;
     font-weight: 800;
+    cursor: pointer;
 }
 
-.Edit {
+.Delete {
     padding: 12px;
-    background: var(--task-priority-high);
+    background: rgb(223, 54, 31);
     border: none;
     border-radius: 5px;
     color: #FFF;
     margin-top: 10px;
     font-weight: 800;
+    cursor: pointer;
 }
 
+.tohome {
+    display: flex;
+    margin: 10px 0;
+    transform: translateY(-8px);
+    font-size: 17px;
+    padding: 10px;
+}
 
-/*Category detail css*/
+.tohome span {
+    margin-right: 7px;
+}
 
-#category-detail {
+.details {
     padding: 20px;
-    margin-top: 10px;
+    border-radius: 5px;
+    border-left: 1px solid #00000020;
+    border-bottom: 1px solid #00000020;
 }
 
-#category-detail {
+.details h1 {
+    font-family: "Poppins", sans-serif;
+    font-weight: 600;
+    font-size: 30px;
+    margin-top: 20px;
+}
+
+.details .text {
     display: flex;
     flex-direction: column;
-    justify-content: space-evenly;
+}
+
+.details .text p {
+    margin: 5px 0;
+    font-size: 18px;
+    padding: 10px;
+    border-bottom: 1px solid #00000020;
+}
+
+.Edit,
+.Delete {
+    margin-top: 30px;
+    margin-right: 15px;
+}
+
+.check {
+    padding: 10px;
+}
+
+.set-completed {
+    display: flex;
+    align-items: center;
+    font-size: 17px;
+    padding: 10px;
+    border-bottom: 1px solid #00000020;
+}
+
+.set-postponed {
+    display: flex;
+    align-items: center;
+    font-size: 17px;
+    padding: 10px;
+}
+
+.set-postponed p,
+.set-completed p {
+    transform: translateY(-4px);
+}
+
+.set-postponed label,
+.set-completed label {
+    margin-right: 15px;
 }

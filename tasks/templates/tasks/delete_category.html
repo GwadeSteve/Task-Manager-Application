@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Delete Task</title>
+    <title>Delete Category</title>
 </head>
 <body>
     <h1>Delete Task</h1>
@@ -10,6 +10,6 @@
         {% csrf_token %}
         <button type="submit">Delete</button>
     </form>
-    <a href="{% url 'tasks:category-detail' %}">Cancel</a>
+    <a href="{% url 'tasks:category-detail' category.id %}">Cancel</a>
 </body>
 </html>

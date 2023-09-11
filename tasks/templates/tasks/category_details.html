@@ -1,23 +1,55 @@
 {% extends 'tasks/tasks_base.html' %}
 
+{% block head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
 {% block title%}
-    <title>{{Category.name}}</title>
+    <title>{{category.name}}</title>
 {% endblock%}
 
-{% block task_detail%}
-    <a href="{% url 'tasks:task-list' %}"><span class="material-symbols-outlined">arrow_back</span> Back to Home</a>
+{% block category_detail %}
+    <a href="{% url 'tasks:task-list' %}" class="tohome"><span class="material-symbols-outlined">arrow_back</span> Back to Home</a>
     <div class="details">
-        <h1>{{ Category.name }} Details</h1>
-        <p><strong>Description :</strong> {{ category.description }}</p>
-        <p><strong>Date of Creation :</strong> {{ category.created_at }}</p>
-        <p><strong>Number of Tasks:</strong> {{ category.get_task_count }}</p>
-        <p><strong>Number of Completed Tasks:</strong> {{ category.get_completed_task_count }}</p>
-        <p><strong>Number of Pending Tasks:</strong> {{ category.get_completion_count.pending }}</p>
-        <p><strong>Stats:</strong> {{ category.get_completion_count }}</p>
+        <h1>{{ category.name }} Details</h1>
+        <div class="text">
+            <p><strong>Category Name :</strong> {{ category.name }}</p>
+            <p><strong>Category Description :</strong> {{ category.description }}</p>
+            <p><strong>Date of Creation :</strong> {{ category.created_at }}</p>
+            <p><strong>Task Count:</strong> {{ category.get_task_count }}</p>
+            <p><strong>Task Distribution</strong></p>
+        </div>
+        <div class="chart">
+            <canvas id="donutChart" width="200" height="200"></canvas>
+        </div>   
     </div>
     <div class="others">
-        <a href="{% url 'tasks:edit-category' category.id %}"><button type="button" class="w3-btn">Edit Category</button></a>
-        <a href="{% url 'tasks:category-detail' category.id %}"><button type="button" class="w3-btn">Delete Category</button></a>
+        <a href="{% url 'tasks:edit-category' category.id %}"><button type="button" class="Edit">Edit Category</button></a>
+        <a href="{% url 'tasks:delete-category' category.id %}"><button type="button" class="Delete">Delete Category</button></a>
     </div>
+    <script>
+        // Get the completion data from your Django template variables
+        var completedTasks = {{ category.get_completion_count.completed }};
+        var pendingTasks = {{ category.get_completion_count.pending }};
+        var lateTasks = {{ category.get_completion_count.postponed }};
+        var postponedTasks = {{ category.get_completion_count.late }};
+    
+        // Create the donut chart
+        var ctx = document.getElementById('donutChart').getContext('2d');
+        var donutChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Completed', 'Pending', 'Late', 'Postponed'],
+                datasets: [{
+                    data: [completedTasks, pendingTasks, lateTasks, postponedTasks],
+                    backgroundColor: ['#379C2F', 'rgba(92, 182, 249, 1)','rgb(251, 118, 118)', 'rgba(253, 158, 46, 1)'],
+                }],
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+            },
+        });
+    </script>
 {%endblock%}
     

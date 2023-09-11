@@ -4,7 +4,7 @@ from .forms import CategoryForm, TaskForm,EditTaskForm,EditCategoryForm
 from django.contrib import messages
 from users.models import CustomUser
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseBadRequest
+from django.http import JsonResponse
 
 @login_required
 def task_detail_view(request, task_id):
@@ -41,8 +41,27 @@ def edit_category_view(request,category_id):
     else:
         form = EditCategoryForm(instance=category)
 
-    return render(request,'tasks/edit_category.html',{'form':form,'category':category})     
+    return render(request,'tasks/edit_category.html',{'form':form,'category':category})   
 
+@login_required
+def mark_task_completed(request, task_id):
+    task = get_object_or_404(Task, id=task_id,user=request.user)
+    task.status = 'completed'
+    task.save()
+    return JsonResponse({'message': 'Task marked as completed successfully'})
+
+@login_required
+def mark_task_postponed(request, task_id):
+    task = get_object_or_404(Task, id=task_id,user=request.user)
+    task.status = 'postponed'
+    task.save()
+    return JsonResponse({'message': 'Task marked as postponed successfully'})
+
+@login_required
+def check_task_status(request, task_id):
+    task = get_object_or_404(Task,id=task_id, user = request.user)
+    task_status = task.status  # Replace with your actual attribute for task status
+    return JsonResponse({'status': task_status})
 
 @login_required
 def delete_task_view(request, task_id):
@@ -62,7 +81,7 @@ def delete_category_view(request, category_id):
         category.delete()
         return redirect('tasks:task-list')
 
-    return render(request, 'tasks/delete_task.html', {'category':category})
+    return render(request, 'tasks/delete_category.html', {'category':category})
 
 @login_required
 def create_category_view(request):
