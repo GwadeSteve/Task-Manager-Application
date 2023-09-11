@@ -1,15 +1,15 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Delete Category</title>
-</head>
-<body>
-    <h1>Delete Task</h1>
-    <p>Are you sure you want to delete "{{ category.name }}"?</p>
-    <form method="post">
-        {% csrf_token %}
-        <button type="submit">Delete</button>
-    </form>
-    <a href="{% url 'tasks:category-detail' category.id %}">Cancel</a>
-</body>
-</html>
+{%extends 'tasks/tasks_base.html' %}
+
+{% block delete_category%}
+    <div class="details">
+        <h1>Delete Task</h1>
+        <div class="text">
+            <p>Are you sure you want to delete "{{ category.name }}"?</p>
+        </div>
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit">Delete</button>
+        </form>
+        <a href="{% url 'tasks:category-detail' category.id %}" class="Edit">Cancel</a>
+    </div>
+{% endblock%}
