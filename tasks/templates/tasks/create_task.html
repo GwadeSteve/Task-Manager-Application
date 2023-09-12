@@ -5,7 +5,18 @@
 {%endblock%}
 
 {% block create-task %}
-
+{% if form.errors %}
+    <div class="error w3-animate-top" style="z-index:-999999999;">
+        <h4>Please correct the following errors:</h4>
+        <ul>
+            {% for field in form %}
+                {% for error in field.errors %}
+                    <li>{{ field.label }}: {{ error }}</li>
+                {% endfor %}
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}
 <form method='post' class="input-form" style="margin-bottom: 40px; font-weight: bold;">
     <h2 class="registration-title">Task Creation Form</h2>
     <p>Time to create your hustles into your categories</p>

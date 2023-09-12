@@ -10,30 +10,37 @@ class CategoryForm(forms.ModelForm):
         fields = ['name', 'description']
 
 
-def validate_due_date_time(value):
-    # Get the current date and time
-    now = datetime.now()
+# Define a custom validation function for the due date
+def validate_due_date(value):
+    # Get the current date
+    today = datetime.now().date()
 
     # Check if the due date is in the past
-    if value.date() < now.date():
+    if value < today:
         raise ValidationError('Due date cannot be in the past.')
 
-    # Check if the due date is today and the due time is in the past
-    if value.date() == now.date() and value.time() < now.time():
+# Define a custom validation function for the due time
+def validate_due_time(value):
+    # Get the current time
+    now = datetime.now().time()
+
+    # Check if the due time is in the past
+    if value < now:
         raise ValidationError('Due time cannot be in the past.')
-        
+
 class TaskForm(forms.ModelForm):
+    class Meta:
+        model = Task
+        fields = [ 'category','title', 'description', 'due_date', 'due_time', 'status', 'priority', 'attachments', 'reminders']
+
+    # Add separate due_date and due_time fields to the form
+    due_date = forms.DateField(validators=[validate_due_date])
+    due_time = forms.TimeField(validators=[validate_due_time])
 
     def __init__(self, user, *args, **kwargs):
         super(TaskForm, self).__init__(*args, **kwargs)
         self.fields['category'].queryset = Category.objects.filter(user=user)
-
-    #Validate the due date and time 
-    due_date = forms.DateTimeField(validators=[validate_due_date_time])
         
-    class Meta:
-        model = Task
-        fields = [ 'category','title', 'description', 'due_date', 'due_time', 'status', 'priority', 'attachments', 'reminders']
 
 class EditCategoryForm(forms.ModelForm):
     class Meta:

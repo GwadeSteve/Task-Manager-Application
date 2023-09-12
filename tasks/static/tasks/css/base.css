@@ -790,3 +790,12 @@ option,
     display: flex;
     flex-direction: row;
 }
+
+.error {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    background: rgba(246, 44, 44, 0.7);
+    color: white;
+    margin: 10px 0;
+}

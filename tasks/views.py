@@ -111,7 +111,6 @@ def create_task_view(request):
             task = form.save(commit=False)
             task.user = request.user
             task.save()
-            messages.success(request, 'Task created successfully.')
             return redirect('tasks:task-list')
     else:
         form = TaskForm(user=user)

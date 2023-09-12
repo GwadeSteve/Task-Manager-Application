@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'users',
     'crispy_forms',
     'core',
+    'channels',
 ]
 
 
@@ -79,6 +80,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'TaskManager.wsgi.application'
+
 
 
 # Database
