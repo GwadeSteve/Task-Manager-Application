@@ -33,6 +33,7 @@
         var pendingTasks = {{ category.get_completion_count.pending }};
         var lateTasks = {{ category.get_completion_count.postponed }};
         var postponedTasks = {{ category.get_completion_count.late }};
+        console.log(completedTasks,pendingTasks,lateTasks,postponedTasks);
     
         // Create the donut chart
         var ctx = document.getElementById('donutChart').getContext('2d');
