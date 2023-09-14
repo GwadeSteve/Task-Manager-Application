@@ -47,8 +47,6 @@ INSTALLED_APPS = [
     'channels',
 ]
 
-
-
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.middleware.cache.UpdateCacheMiddleware',
@@ -79,8 +77,18 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'TaskManager.wsgi.application'
+# Use ASGI instead of WSGI
+ASGI_APPLICATION = "TaskManager.routing.application"
 
+# Set the backend for Django Channels
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("localhost", 6379)],  
+        },
+    },
+}
 
 
 # Database
@@ -92,7 +100,7 @@ DATABASES = {
         'NAME': 'Task_App',
         'USER': 'postgres',
         'PASSWORD': 'irving_203',
-        'HOST': 'localhost',  # Change to your PostgreSQL server's host
+        'HOST': 'localhost', 
     }
 }
 

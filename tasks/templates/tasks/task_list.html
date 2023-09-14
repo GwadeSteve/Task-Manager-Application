@@ -77,15 +77,7 @@
 
  <div class="tasks">
     {% for task in tasks %}
-        {% if task.status == 'completed' %}
-            <div class="task completed">
-        {% elif task.status == 'pending' %}
-            <div class="task pending">
-        {% elif task.status == 'postponed' %}
-            <div class="task postponed">
-        {% elif task.status == 'late' %}
-            <div class="task late">
-        {% endif %}
+        <div class="task {{task.status}}">
             <a href="{% url 'tasks:task-detail' task.id %}">
                 <div class="heading">
                     <p class="first">{{ task.title }}</p>
@@ -98,5 +90,49 @@
         </div>
     {% endfor %}
 </div>
-
+<script>
+    // Determine the WebSocket URL dynamically based on the current page's URL
+    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    const host = window.location.host;
+    const path = '/ws/tasks/';
+    const webSocketUrl = `${protocol}//${host}${path}`;
+  
+    // Establish a WebSocket connection
+    const socket = new WebSocket(webSocketUrl);
+  
+    // WebSocket onopen event handler
+    socket.addEventListener('open', (event) => {
+      console.log('WebSocket connection opened:', event);
+      // You can perform any actions on WebSocket connection open
+    });
+  
+    // WebSocket onmessage event handler
+    socket.addEventListener('message', (event) => {
+      console.log('Message from WebSocket server:', event);
+  
+      // Handle the incoming message from the WebSocket server
+      const data = JSON.parse(event.data);
+  
+      if (data.type === 'update_data') {
+        // Handle updates received from the server
+        const tasks = data.tasks;
+        const categories = data.categories;
+  
+        // Update your UI based on the received data
+        // For example, you can update the task list or categories
+      }
+    });
+  
+    // WebSocket onerror event handler
+    socket.addEventListener('error', (event) => {
+      console.error('WebSocket error:', event);
+      // Handle WebSocket errors if needed
+    });
+  
+    // WebSocket onclose event handler
+    socket.addEventListener('close', (event) => {
+      console.log('WebSocket connection closed:', event);
+      // Handle WebSocket connection close, you can attempt to reconnect here
+    });
+  </script>
 {% endblock  %}
