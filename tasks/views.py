@@ -5,6 +5,8 @@ from django.contrib import messages
 from users.models import CustomUser
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
 
 @login_required
 def task_detail_view(request, task_id):
@@ -23,7 +25,12 @@ def edit_task_view(request, task_id):
         form = EditTaskForm(request.user, request.POST, request.FILES, instance=task)
         if form.is_valid():
             form.save()
-            return redirect('tasks:task-detail', task_id=task.id)
+            channel_layer = get_channel_layer()
+            async_to_sync(channel_layer.group_send)(
+                f"user_{request.user.id}",
+                {"type": "update_data"},
+            )
+            return redirect('tasks:task-list')
     else:
         form = EditTaskForm(request.user, instance=task)
 
@@ -37,7 +44,13 @@ def edit_category_view(request,category_id):
         form = EditCategoryForm(instance=category , data=request.POST)
         if form.is_valid():
             form.save()
-            return redirect('tasks:category-detail',category_id=category.id)
+            # Notify clients about the new task
+            channel_layer = get_channel_layer()
+            async_to_sync(channel_layer.group_send)(
+                f"user_{request.user.id}",
+                {"type": "update_data"},
+            )
+            return redirect('tasks:task-list')
     else:
         form = EditCategoryForm(instance=category)
 
@@ -61,17 +74,20 @@ def mark_task_postponed(request, task_id):
 @login_required
 def check_task_status(request, task_id):
     task = get_object_or_404(Task,id=task_id, user = request.user)
-    task_status = task.status  # Replace with your actual attribute for task status
+    task_status = task.status
     return JsonResponse({'status': task_status})
 
 @login_required
 def delete_task_view(request, task_id):
     task = get_object_or_404(Task, id=task_id, user=request.user)
-
     if request.method == 'POST':
         task.delete()
+        channel_layer = get_channel_layer()
+        async_to_sync(channel_layer.group_send)(
+            f"user_{request.user.id}",
+            {"type": "update_data"},
+        )
         return redirect('tasks:task-list')
-
     return render(request, 'tasks/delete_task.html', {'task': task})
 
 @login_required
@@ -80,6 +96,12 @@ def delete_category_view(request, category_id):
 
     if request.method == 'POST':
         category.delete()
+        # Notify clients about the new task
+        channel_layer = get_channel_layer()
+        async_to_sync(channel_layer.group_send)(
+            f"user_{request.user.id}",
+            {"type": "update_data"},
+        )
         return redirect('tasks:task-list')
 
     return render(request, 'tasks/delete_category.html', {'category':category})
@@ -92,7 +114,11 @@ def create_category_view(request):
             category = form.save(commit=False)
             category.user = request.user
             category.save()
-            messages.success(request, 'Category created successfully.')
+            channel_layer = get_channel_layer()
+            async_to_sync(channel_layer.group_send)(
+                f"user_{request.user.id}",
+                {"type": "update_data"},
+            )
             return redirect('tasks:task-list')
     else:
         form = CategoryForm()
@@ -103,15 +129,22 @@ def create_task_view(request):
     user = request.user
     user_categories = Category.objects.filter(user=user)
     if request.method == 'POST':
-        form = TaskForm(user=user, data=request.POST, files=request.FILES)
+        form = TaskForm(request.POST, request.FILES)
         if form.is_valid():
-            category_id = request.POST.get('category')
+            category_id = form.cleaned_data.get('category')
             category = get_object_or_404(Category, id=category_id, user=user)
-            form.instance.category = category
             task = form.save(commit=False)
-            task.user = request.user
+            task.user = user
+            task.category = category
             task.save()
+            channel_layer = get_channel_layer()
+            async_to_sync(channel_layer.group_send)(
+                f"user_{user.id}",
+                {"type": "update_data"},
+            )
+            messages.success(request, 'Task created successfully.')
             return redirect('tasks:task-list')
+
     else:
         form = TaskForm(user=user)
         form.fields['category'].queryset = user_categories
