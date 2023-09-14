@@ -1,0 +1,20 @@
+{%extends 'tasks/tasks_base.html' %}
+
+{% block delete_category%}
+    <div class="details">
+        <h1>Delete Category</h1>
+        <div class="text">
+            <p style="border-bottom:none; line-height:165%;">Are you sure you want to delete "{{ category.name }}"?<br> After deleting there is no way to recover category, files and task attached to it. Click delete button to delete category.</p>
+        </div>
+    </div>
+    <div class="others">
+        <form method="post">
+            <a href="{% url 'tasks:category-detail' category.id %}" class="Edit">Cancel</a>
+            {% csrf_token %}
+            <button type="submit" class="Delete">Delete</button>
+        </form>
+    </div>
+{% endblock%}
+
+
+

@@ -43,6 +43,7 @@ def edit_category_view(request,category_id):
 
     return render(request,'tasks/edit_category.html',{'form':form,'category':category})   
 
+
 @login_required
 def mark_task_completed(request, task_id):
     task = get_object_or_404(Task, id=task_id,user=request.user)
@@ -101,7 +102,6 @@ def create_category_view(request):
 def create_task_view(request):
     user = request.user
     user_categories = Category.objects.filter(user=user)
-    
     if request.method == 'POST':
         form = TaskForm(user=user, data=request.POST, files=request.FILES)
         if form.is_valid():
@@ -122,7 +122,7 @@ def create_task_view(request):
 def task_list_view(request):
     categories = Category.objects.filter(user=request.user)
     tasks = Task.objects.filter(user=request.user)
-    return render(request,'tasks/task_list.html',{'categories':categories,'tasks':tasks,})
+    return render(request,'tasks/task_list.html',{'categories':categories,'tasks':tasks})
 
 @login_required
 def task_category_view(request):

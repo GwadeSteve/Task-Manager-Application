@@ -11,66 +11,50 @@ class CategoryForm(forms.ModelForm):
 
 
 # Define a custom validation function for the due date
-def validate_due_date(value):
-    # Get the current date
-    today = datetime.now().date()
-
-    # Check if the due date is in the past
-    if value < today:
-        raise ValidationError('Due date cannot be in the past.')
-
-# Define a custom validation function for the due time
-def validate_due_time(value):
-    # Get the current time
-    now = datetime.now().time()
-
-    # Check if the due time is in the past
-    if value < now:
-        raise ValidationError('Due time cannot be in the past.')
-    
-def validate_date_reminder(value, form):
-    # Get the current date and time
-    now = datetime.now()
-
-    # Check if the reminder date is in the past
-    if value < now.date():
-        raise ValidationError('Reminder Date cannot be in the past.')
-
-    # Compare with the due date
-    if value > form.cleaned_data['due_date']:
-        raise ValidationError('Reminder Date cannot be after Due date.')
-
-def validate_time_reminder(value, form):
-    # Get the current date and time
-    now = datetime.now()
-
-    # Combine the current date with the reminder time
-    reminder_datetime = datetime.combine(now.date(), value)
-
-    # Check if the reminder time is in the past
-    if reminder_datetime < now:
-        raise ValidationError('Reminder time cannot be in the past.')
-
-    # Compare with the due time
-    due_datetime = datetime.combine(now.date(), form.cleaned_data['due_time'])
-    if reminder_datetime > due_datetime:
-        raise ValidationError('Reminder time cannot be after Due time.')
-
-
 class TaskForm(forms.ModelForm):
     class Meta:
         model = Task
-        fields = [ 'category','title', 'description', 'due_date', 'due_time', 'status', 'priority', 'attachments', 'date_reminders','time_reminders']
-
-    # Add separate due_date and due_time fields to the form
-    due_date = forms.DateField(validators=[validate_due_date])
-    due_time = forms.TimeField(validators=[validate_due_time])
-    date_reminders = forms.DateField(validators=[validate_date_reminder])
-    time_reminders = forms.TimeField(validators=[validate_time_reminder])
+        fields = ['category', 'title', 'description', 'due_date', 'due_time', 'status', 'priority', 'attachments', 'reminders']
 
     def __init__(self, user, *args, **kwargs):
         super(TaskForm, self).__init__(*args, **kwargs)
         self.fields['category'].queryset = Category.objects.filter(user=user)
+
+    def clean_due_date(self):
+        due_date = self.cleaned_data['due_date']
+        today = datetime.now().date()
+
+        # Check if the due date is in the past
+        if due_date < today:
+            raise ValidationError('Due date cannot be in the past.')
+
+        return due_date
+
+    def clean_due_time(self):
+        due_time = self.cleaned_data['due_time']
+        now = datetime.now().time()
+
+        # Check if the due time is in the past for the current day
+        if due_time < now:
+            raise ValidationError('Due time cannot be in the past.')
+
+        return due_time
+
+    def clean_reminder_datetime(self):
+        reminder_datetime = self.cleaned_data['reminders']
+        due_datetime = datetime.combine(self.cleaned_data['due_date'], self.cleaned_data['due_time'])
+
+        # Check if the reminder datetime is in the future and after the due datetime
+        if reminder_datetime <= due_datetime:
+            raise ValidationError('Reminder datetime must be in the future and after the due datetime.')
+
+        return reminder_datetime
+
+    reminders = forms.DateTimeField(
+        help_text='Enter the reminder datetime in the format YYYY-MM-DD HH:MM (e.g., 2023-09-13 08:00).',
+        widget=forms.DateTimeInput(attrs={'placeholder': 'YYYY-MM-DD HH:MM'}),
+    )
+
         
 
 class EditCategoryForm(forms.ModelForm):
@@ -85,7 +69,7 @@ class EditTaskForm(forms.ModelForm):
 
     class Meta:
         model = Task
-        fields = ['category','title', 'description', 'due_date', 'due_time', 'status', 'priority', 'attachments', 'date_reminders','time_reminders']
+        fields = ['category','title', 'description', 'due_date', 'due_time', 'status', 'priority', 'attachments', 'reminders']
 
 class TaskFilterForm(forms.Form):
     STATUS_CHOICES = [

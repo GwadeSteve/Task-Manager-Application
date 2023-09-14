@@ -75,8 +75,7 @@ class Task(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
     priority = models.CharField(max_length=20, choices=PRIORITY_CHOICES, default='medium')
     attachments = models.FileField(upload_to='attachments/', blank=True, null=True)
-    date_reminders = models.DateField(due_date)
-    time_reminders = models.TimeField()
+    reminders = models.DateTimeField()
 
     def __str__(self):
         return self.title

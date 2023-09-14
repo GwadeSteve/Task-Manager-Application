@@ -1,0 +1,24 @@
+{% extends 'tasks/tasks_base.html' %}
+
+{% block title%}
+    <title>Edit Category</title>
+{%endblock%}
+
+{% block edit_category %}
+
+<form method='post' class="input-form" style="margin-bottom: 40px; font-weight: bold;">
+    <h2 class="registration-title">Category Update Form</h2>
+    <p>Missed out something ? Update and continue</p>
+    {% csrf_token %}
+    <div class="category-name">
+        <label for="{{ form.name.id_for_label }}" class="form-label">Category Name</label>
+        {{form.name}}
+    </div>
+    <div class="category-description">
+        <label for="{{ form.description.id_for_label }}" class="form-label">Description</label>
+        {{form.description}}
+    </div>
+    <button type="submit" class="w3-btn submit-button">Update Category</button>
+</form>
+{% endblock  %}
+

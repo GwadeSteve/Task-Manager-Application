@@ -1,0 +1,65 @@
+{% extends 'tasks/tasks_base.html' %}
+
+{% block title%}
+    <title>Edit Task</title>
+{%endblock%}
+
+{% block edit_task %}
+{% if form.errors %}
+    <div class="error w3-animate-top" style="z-index:-999999999;">
+        <h4>Please correct the following errors:</h4>
+        <ul>
+            {% for field in form %}
+                {% for error in field.errors %}
+                    <li>{{ field.label }}: {{ error }}</li>
+                {% endfor %}
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}
+<form method='post' class="input-form" style="margin-bottom: 40px; font-weight: bold;">
+    <h2 class="registration-title">Task Update Form</h2>
+    <p>Missed out something ? Correct it now</p>
+    {% csrf_token %}
+    <div class="category-drop">
+        <label for="{{ form.category.id_for_label }}" class="form-label">Choose Category</label>
+        {{form.category}}
+    </div>
+    <div class="task-name">
+        <label for="{{ form.title.id_for_label }}" class="form-label">Task Name</label>
+        {{form.title}}
+    </div>
+    <div class="task-description">
+        <label for="{{ form.description.id_for_label }}" class="form-label">Description</label>
+        {{form.description}}
+    </div>
+    <div class="task-due_date">
+        <label for="{{ form.due_date.id_for_label }}" class="form-label">Due Date</label>
+        {{form.due_date}}
+    </div>
+    <div class="task-due_time">
+        <label for="{{ form.due_time.id_for_label }}" class="form-label">Due Time</label>
+        {{form.due_time}}
+    </div>
+    <div class="task-priority">
+        <label for="{{ form.priority.id_for_label }}" class="form-label">Priority</label>
+        {{form.priority}}
+    </div>
+    <div class="task-status">
+        <label for="{{ form.status.id_for_label }}" class="form-label">Status</label>
+        {{form.status}}
+    </div>
+    <div class="task-attachments">
+        <label for="{{ form.attachments.id_for_label }}" class="form-label">Attachments</label>
+        {{form.attachments}}
+    </div>
+    <div class="task-reminder">
+        <label for="{{ form.reminders.id_for_label }}" class="form-label">DateTime reminder</label>
+        {{ form.reminders }}
+        <span class="text-danger">{{ form.reminders.errors }}</span>
+        <small class="form-text text-muted" style="font-style: 'Poppins',sans-serif;">Enter the reminder datetime in the format YYYY-MM-DD HH:MM (e.g., 2023-09-13 08:00).</small>
+    </div>  
+    <button type="submit" class="w3-btn submit-button">Update Task</button>
+</form>
+{% endblock  %}
+
