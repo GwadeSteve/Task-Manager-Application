@@ -5,8 +5,6 @@ from django.contrib import messages
 from users.models import CustomUser
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
-from channels.layers import get_channel_layer
-from asgiref.sync import async_to_sync
 
 @login_required
 def task_detail_view(request, task_id):
@@ -25,11 +23,6 @@ def edit_task_view(request, task_id):
         form = EditTaskForm(request.user, request.POST, request.FILES, instance=task)
         if form.is_valid():
             form.save()
-            channel_layer = get_channel_layer()
-            async_to_sync(channel_layer.group_send)(
-                f"user_{request.user.id}",
-                {"type": "update_data"},
-            )
             return redirect('tasks:task-list')
     else:
         form = EditTaskForm(request.user, instance=task)
@@ -44,12 +37,6 @@ def edit_category_view(request,category_id):
         form = EditCategoryForm(instance=category , data=request.POST)
         if form.is_valid():
             form.save()
-            # Notify clients about the new task
-            channel_layer = get_channel_layer()
-            async_to_sync(channel_layer.group_send)(
-                f"user_{request.user.id}",
-                {"type": "update_data"},
-            )
             return redirect('tasks:task-list')
     else:
         form = EditCategoryForm(instance=category)
@@ -82,11 +69,6 @@ def delete_task_view(request, task_id):
     task = get_object_or_404(Task, id=task_id, user=request.user)
     if request.method == 'POST':
         task.delete()
-        channel_layer = get_channel_layer()
-        async_to_sync(channel_layer.group_send)(
-            f"user_{request.user.id}",
-            {"type": "update_data"},
-        )
         return redirect('tasks:task-list')
     return render(request, 'tasks/delete_task.html', {'task': task})
 
@@ -96,12 +78,6 @@ def delete_category_view(request, category_id):
 
     if request.method == 'POST':
         category.delete()
-        # Notify clients about the new task
-        channel_layer = get_channel_layer()
-        async_to_sync(channel_layer.group_send)(
-            f"user_{request.user.id}",
-            {"type": "update_data"},
-        )
         return redirect('tasks:task-list')
 
     return render(request, 'tasks/delete_category.html', {'category':category})
@@ -114,11 +90,6 @@ def create_category_view(request):
             category = form.save(commit=False)
             category.user = request.user
             category.save()
-            channel_layer = get_channel_layer()
-            async_to_sync(channel_layer.group_send)(
-                f"user_{request.user.id}",
-                {"type": "update_data"},
-            )
             return redirect('tasks:task-list')
     else:
         form = CategoryForm()
@@ -129,27 +100,24 @@ def create_task_view(request):
     user = request.user
     user_categories = Category.objects.filter(user=user)
     if request.method == 'POST':
-        form = TaskForm(request.POST, request.FILES)
+        form = TaskForm(request.POST, request.FILES, user=user)
         if form.is_valid():
-            category_id = form.cleaned_data.get('category')
-            category = get_object_or_404(Category, id=category_id, user=user)
+            category_name = form.cleaned_data.get('category')  # Get category name
+            category = get_object_or_404(Category, user=user, name=category_name)  # Filter by user and category name
             task = form.save(commit=False)
             task.user = user
             task.category = category
             task.save()
-            channel_layer = get_channel_layer()
-            async_to_sync(channel_layer.group_send)(
-                f"user_{user.id}",
-                {"type": "update_data"},
-            )
             messages.success(request, 'Task created successfully.')
             return redirect('tasks:task-list')
 
     else:
         form = TaskForm(user=user)
         form.fields['category'].queryset = user_categories
-    
+
     return render(request, 'tasks/create_task.html', {'form': form})
+
+
 
 @login_required
 def task_list_view(request):
@@ -170,3 +138,24 @@ def calendar(request):
 @login_required
 def stats(request):
     return render(request,'tasks/stats.html')
+
+# views.py
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from .serializers import TaskSerializer,CategorySerializer
+
+@api_view(['GET'])
+def get_updates(request):
+    tasks = Task.objects.filter(user=request.user)
+    categories = Category.objects.filter(user=request.user)
+
+    task_serializer = TaskSerializer(tasks, many=True)
+    category_serializer = CategorySerializer(categories, many=True)
+
+    data = {
+        'tasks': task_serializer.data,
+        'categories': category_serializer.data,
+    }
+
+    return Response(data)
+

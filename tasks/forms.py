@@ -15,10 +15,12 @@ class TaskForm(forms.ModelForm):
     class Meta:
         model = Task
         fields = ['category', 'title', 'description', 'due_date', 'due_time', 'status', 'priority', 'attachments', 'reminders']
-
-    def __init__(self, user, *args, **kwargs):
+        
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)  # Get the 'user' parameter
         super(TaskForm, self).__init__(*args, **kwargs)
-        self.fields['category'].queryset = Category.objects.filter(user=user)
+        if user is not None:
+            self.fields['category'].queryset = Category.objects.filter(user=user)
 
     def clean_due_date(self):
         due_date = self.cleaned_data['due_date']
