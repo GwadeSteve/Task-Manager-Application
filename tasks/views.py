@@ -9,6 +9,7 @@ from django.http import JsonResponse
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .serializers import TaskSerializer,CategorySerializer
+from django.db.models import Q
 
 @login_required
 def task_detail_view(request, task_id):
@@ -145,16 +146,40 @@ def calendar(request):
 def stats(request):
     return render(request,'tasks/stats.html')
 
+@login_required
+def search(request):
+    query = request.GET.get('q', '')
+    task_results = Task.objects.filter(
+        Q(title__icontains=query) | Q(description__icontains=query),
+        user=request.user
+    )
+    category_results = Category.objects.filter(
+        Q(name__icontains=query) | Q(description__icontains=query),
+        user=request.user
+    )
+    Count_task = task_results.count()
+    Count_category = category_results.count()
+    return render(request, 'tasks/task_search.html', {
+        'task_results': task_results, 
+        'category_results': category_results, 
+        'query': query,
+        'Count_task': Count_task,
+        'Count_category': Count_category,
+        'Count' : Count_category+Count_task,
+        }
+    )
+    
+
 @csrf_exempt
 @api_view(['GET'])
 def get_updates(request):
-    #tasks = Task.objects.filter(user=request.user)
-    #categories = Category.objects.filter(user=request.user) 
-    #task_serializer = TaskSerializer(tasks, many=True)
-    #category_serializer = CategorySerializer(categories, many=True)
-    #data = {
-     #   'tasks': task_serializer.data,
-     #   'categories': category_serializer.data,
-    #}
+    tasks = Task.objects.filter(user=request.user)
+    categories = Category.objects.filter(user=request.user) 
+    task_serializer = TaskSerializer(tasks, many=True)
+    category_serializer = CategorySerializer(categories, many=True)
+    data = {
+        'tasks': task_serializer.data,
+        'categories': category_serializer.data,
+    }
     return Response(request.data)
 

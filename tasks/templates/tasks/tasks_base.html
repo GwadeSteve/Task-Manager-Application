@@ -78,10 +78,13 @@
                 <h1 style="display: flex; position: relative; z-index: -1;">Hey, <span style="color: #12229D; transform:translate(5px,3px);">{{ user.first_name }}</span></h1>
             </div>
             <div class="search-container">
-                <input type="text" name="search" placeholder="Search..." class="search-input">
-                <a class="search-btn">
-                    <i class="fas fa-search"></i>
-                </a>
+                <form method="get" action="{% url 'tasks:search' %}" class="search-container">
+                    {% csrf_token %}
+                    <input type="text" name="q" placeholder="Search..." class="search-input">
+                    <button style="background:none;border:none;cursor:pointer;padding-left:13px;" type="submit" class="search-btn">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </form>
                 <span id ="theme-toggle" class="material-symbols-outlined">
                     dark_mode
                 </span>
@@ -132,6 +135,8 @@
             {% block delete_category %}
             {% endblock %}
             {% block delete_task %}
+            {% endblock %}
+            {% block search %}
             {% endblock %}
         </div>
     </div>
