@@ -46,16 +46,24 @@ def edit_category_view(request,category_id):
 
 @login_required
 def mark_task_completed(request, task_id):
-    task = get_object_or_404(Task, id=task_id,user=request.user)
+    task = get_object_or_404(Task, id=task_id, user=request.user)
+    old_status = task.status
     task.status = 'completed'
     task.save()
+    if old_status != task.status:
+        print("Attributes have changed!")
+    
     return JsonResponse({'message': 'Task marked as completed successfully'})
 
 @login_required
 def mark_task_postponed(request, task_id):
-    task = get_object_or_404(Task, id=task_id,user=request.user)
+    task = get_object_or_404(Task, id=task_id, user=request.user)
+    old_status = task.status 
     task.status = 'postponed'
     task.save()
+    if old_status != task.status:
+        print("Attributes have changed!")
+    
     return JsonResponse({'message': 'Task marked as postponed successfully'})
 
 @login_required

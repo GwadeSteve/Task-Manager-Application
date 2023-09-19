@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'tasks',
     'users',
+    'rest_framework',
     'crispy_forms',
     'core',
     'channels',

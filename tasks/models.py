@@ -14,6 +14,16 @@ class Category(models.Model):
 
     def __str__(self):
         return self.name
+    
+    def diff(self):
+        #Get the changed fields and their old and new values.
+        changed_data = {}
+        for field in self._meta.fields:
+            old_value = self._original[field.name]
+            new_value = getattr(self, field.name)
+            if old_value != new_value:
+                changed_data[field.name] = (old_value, new_value)
+        return changed_data
 
     def get_task_count(self):
         return self.task_set.count()
@@ -84,6 +94,16 @@ class Task(models.Model):
 
     def __str__(self):
         return self.title
+    
+    def diff(self):
+        #Get the changed fields and their old and new values.
+        changed_data = {}
+        for field in self._meta.fields:
+            old_value = self._original[field.name]
+            new_value = getattr(self, field.name)
+            if old_value != new_value:
+                changed_data[field.name] = (old_value, new_value)
+        return changed_data
     
     def is_overdue(self):
         now = datetime.now()
