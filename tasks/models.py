@@ -9,8 +9,21 @@ class Category(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
 
+    class Meta:
+        verbose_name_plural = "Categories"
+
     def __str__(self):
         return self.name
+    
+    def diff(self):
+        #Get the changed fields and their old and new values.
+        changed_data = {}
+        for field in self._meta.fields:
+            old_value = self._original[field.name]
+            new_value = getattr(self, field.name)
+            if old_value != new_value:
+                changed_data[field.name] = (old_value, new_value)
+        return changed_data
 
     def get_task_count(self):
         return self.task_set.count()
@@ -63,6 +76,8 @@ class Task(models.Model):
         ('medium', 'Medium Priority'),
         ('low', 'Low Priority'),
     ]
+    class Meta:
+        verbose_name_plural = "Tasks"
 
     title = models.CharField(max_length=50)
     description = models.TextField(max_length=250)
@@ -79,6 +94,16 @@ class Task(models.Model):
 
     def __str__(self):
         return self.title
+    
+    def diff(self):
+        #Get the changed fields and their old and new values.
+        changed_data = {}
+        for field in self._meta.fields:
+            old_value = self._original[field.name]
+            new_value = getattr(self, field.name)
+            if old_value != new_value:
+                changed_data[field.name] = (old_value, new_value)
+        return changed_data
     
     def is_overdue(self):
         now = datetime.now()

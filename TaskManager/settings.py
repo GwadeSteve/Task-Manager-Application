@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'tasks',
     'users',
+    'rest_framework',
     'crispy_forms',
     'core',
     'channels',
@@ -77,19 +78,13 @@ TEMPLATES = [
     },
 ]
 
-# Use ASGI instead of WSGI
-ASGI_APPLICATION = "TaskManager.routing.application"
+WSGI_APPLICATION = "TaskManager.wsgi.application"
 
-# Set the backend for Django Channels
 CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "channels_redis.core.RedisChannelLayer",
-        "CONFIG": {
-            "hosts": [("localhost", 6379)],  
-        },
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer', 
     },
 }
-
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases

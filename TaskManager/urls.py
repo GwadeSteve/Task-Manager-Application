@@ -20,14 +20,16 @@ import users
 import core
 from django.conf import settings
 from django.conf.urls.static import static
+from tasks import views
 
 
 
 urlpatterns = [
     path('', include('core.urls')), 
-    path('admin/', admin.site.urls),
+    path('admin/', admin.site.urls,name="admin"),
     path('tasks/', include('tasks.urls')),
     path('users/',include('users.urls')),
+    path('api/get_updates', views.get_updates, name='get_updates'),
 ]
 
 

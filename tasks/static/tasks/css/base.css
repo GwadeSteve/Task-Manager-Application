@@ -30,6 +30,11 @@
     scroll-behavior: smooth;
 }
 
+.dark * {
+    color: white;
+    background: #202123;
+}
+
 body {
     height: 100%;
     width: 100%;
@@ -115,6 +120,16 @@ body {
 
 .search-container .search-btn .fas {
     color: var(--primary-blue);
+}
+
+#theme-toggle {
+    cursor: pointer;
+    padding: 11px 13px;
+    border-left: 1px solid #00000064;
+    box-shadow: 1px 3px 10px #00000064;
+    border-radius: 100%;
+    margin-left: 20px;
+    transform: translateX(10px);
 }
 
 
@@ -411,7 +426,7 @@ svg:hover {
 
 .categories {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
     grid-gap: 8px;
     place-items: center;
     padding: 35px;

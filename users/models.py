@@ -31,6 +31,9 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         ('F', 'Female'),
         ('O', 'Other'),
     )
+    class Meta:
+        verbose_name_plural = "Users"
+        
     email = models.EmailField(unique=True)
     first_name = models.CharField(max_length=60)
     last_name = models.CharField(max_length=60)

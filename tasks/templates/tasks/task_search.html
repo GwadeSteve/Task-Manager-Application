@@ -1,0 +1,51 @@
+{% extends 'tasks/tasks_base.html' %}
+
+{% block title%}
+    <title>Results for {{query}}</title>
+{%endblock%}
+
+{% block search %}
+<div class="date">
+    <h2>Here are the search results for "{{query}}"</h2>
+    <p style="padding-bottom:25px;">We found {{Count}} results</p>
+</div>
+<div>
+    <h3 style="margin-top:20px;border-bottom:1px solid #00000064;padding-bottom:19px;">Categories ({{Count_category}})</h3> 
+</div>
+<div class="categories" style="z-index:-1;padding-bottom:35px;">
+    {% for category in category_results %}
+        <div class="card">
+            <div class="card-head">
+                <p><strong>{{ category.name|slice:":18" }}{% if category.name|length > 18 %}...{%endif%}</strong></p>
+                <span class="material-symbols-outlined" id="category-menu">
+                    more_vert
+                </span>
+            </div>
+            <p class="Description">{{ category.description|slice:":75" }}{% if category.description|length > 75 %}...{% endif %}</p>
+            <p class="stats"><strong>Completed : </strong> {{ category.get_completed_task_count }}/{{ category.get_task_count }}</p>
+            <a href="{% url 'tasks:category-detail' category.id %}">View</a>
+            <p class="card-footer">Created : {{ category.created_at|date:"d F Y \\a\\t H:i" }}</p>
+        </div>
+    {% endfor %}
+</div>
+<div>
+    <h3 style="margin-top:20px;border-bottom:1px solid #00000064;padding-bottom:19px;">Tasks ({{Count_task}})</h3> 
+</div>
+<div class="tasks">
+    {% for task in task_results %}
+        <div class="task {{task.status}}">
+            <a href="{% url 'tasks:task-detail' task.id %}">
+                <div class="heading">
+                    <p class="first">{{ task.title }}</p>
+                    <p class="second {{task.priority}}-priority %}">{{ task.priority }}</p>
+                </div>
+                <p class="third"><strong>Category : </strong> {{ task.category.name }}</p>
+                <p class="fourth"><strong>Start : </strong> {{ task.date_creation|date:"d F Y" }} at {{ task.time_creation|time:"H:i" }}</p>
+                <p class="fifth"><strong>Due : </strong> {{ task.due_date|date:"d F Y" }} at {{ task.due_time|date:"H:i" }}</p>
+            </a>
+        </div>
+    {% endfor %}
+</div>
+
+{% endblock  %}
+
