@@ -47,7 +47,7 @@
     </svg>
  </div> 
 
- <div class="categories">
+ <div class="categories" style="z-index:-1;">
     {% for category in categories %}
         <div class="card">
             <div class="card-head">
@@ -61,8 +61,7 @@
             <a href="{% url 'tasks:category-detail' category.id %}">View</a>
             <p class="card-footer">Created : {{ category.created_at|date:"d F Y \\a\\t H:i" }}</p>
         </div>
-{% endfor %}
-
+    {% endfor %}
 </div>
 
 <div class="date-filter">

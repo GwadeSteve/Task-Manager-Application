@@ -1,5 +1,9 @@
 from django.db.models.signals import pre_save, post_delete,post_save
 from django.dispatch import receiver
+from django.urls import reverse
+from django.contrib.sites.shortcuts import get_current_site
+from django.utils.http import urlencode
+import requests
 from .models import Task,Category
 
 @receiver(pre_save, sender=Task)
@@ -31,4 +35,3 @@ def model_changed(sender, instance, created, **kwargs):
 def model_deleted(sender, instance, **kwargs):
     # If an instance is deleted
     print(f"{sender.__name__} instance with ID {instance.id} was deleted.")
-

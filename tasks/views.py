@@ -1,10 +1,14 @@
 from django.shortcuts import render, redirect,get_object_or_404
+from django.views.decorators.csrf import csrf_exempt
 from .models import Category, Task
 from .forms import CategoryForm, TaskForm,EditTaskForm,EditCategoryForm
 from django.contrib import messages
 from users.models import CustomUser
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from .serializers import TaskSerializer,CategorySerializer
 
 @login_required
 def task_detail_view(request, task_id):
@@ -50,9 +54,6 @@ def mark_task_completed(request, task_id):
     old_status = task.status
     task.status = 'completed'
     task.save()
-    if old_status != task.status:
-        print("Attributes have changed!")
-    
     return JsonResponse({'message': 'Task marked as completed successfully'})
 
 @login_required
@@ -61,9 +62,6 @@ def mark_task_postponed(request, task_id):
     old_status = task.status 
     task.status = 'postponed'
     task.save()
-    if old_status != task.status:
-        print("Attributes have changed!")
-    
     return JsonResponse({'message': 'Task marked as postponed successfully'})
 
 @login_required
@@ -147,23 +145,16 @@ def calendar(request):
 def stats(request):
     return render(request,'tasks/stats.html')
 
-# views.py
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from .serializers import TaskSerializer,CategorySerializer
-
+@csrf_exempt
 @api_view(['GET'])
 def get_updates(request):
-    tasks = Task.objects.filter(user=request.user)
-    categories = Category.objects.filter(user=request.user)
-
-    task_serializer = TaskSerializer(tasks, many=True)
-    category_serializer = CategorySerializer(categories, many=True)
-
-    data = {
-        'tasks': task_serializer.data,
-        'categories': category_serializer.data,
-    }
-
-    return Response(data)
+    #tasks = Task.objects.filter(user=request.user)
+    #categories = Category.objects.filter(user=request.user) 
+    #task_serializer = TaskSerializer(tasks, many=True)
+    #category_serializer = CategorySerializer(categories, many=True)
+    #data = {
+     #   'tasks': task_serializer.data,
+     #   'categories': category_serializer.data,
+    #}
+    return Response(request.data)
 

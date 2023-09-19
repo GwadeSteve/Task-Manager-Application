@@ -1,20 +1,6 @@
-function fetchUpdates() {
-    fetch('/api/get_updates')
-        .then(response => response.json())
-        .then(data => {
-            if (data && data.categories && data.tasks) {
-                console.log(data);
-                updateUI(data);
-            } else {
-                console.error('Invalid data structure received:', data);
-            }
-        })
-        .catch(error => {
-            console.error('Error fetching updates:', error);
-        });
-}
-
-function updateUI(data) {
+//Here i'll get data and update ui accordingly
+//...
+/*function updateUI(data) {
     const categoryListDiv = document.querySelector('.categories');
     const taskListDiv = document.querySelector('.tasks');
     categoryListDiv.innerHTML = '';
@@ -60,4 +46,4 @@ function updateUI(data) {
 fetchUpdates();
 
 // Poll for updates every 5 seconds
-setInterval(fetchUpdates, 5000);
+//setInterval(fetchUpdates, 5000);*/

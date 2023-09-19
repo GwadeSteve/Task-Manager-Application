@@ -9,6 +9,14 @@ document.addEventListener('DOMContentLoaded', function() {
     const category_detail = document.querySelector('#category-detail');
     let isActive = false;
 
+    const themeToggle = document.getElementById('theme-toggle');
+    const body = document.body;
+    themeToggle.addEventListener('click', () => {
+        body.classList.toggle('dark');
+        themeToggle.classList.toggle('dark-theme');
+    });
+
+
     // Function to update the active link based on the current URL
     function updateActiveLink() {
         const currentPath = window.location.pathname;
