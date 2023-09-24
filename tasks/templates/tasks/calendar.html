@@ -1,5 +1,53 @@
 {% extends 'tasks/tasks_base.html' %}
 
-{% block calendar %}
+{%block title%}
+<title>{{user.first_name}}'s Calendar</title>
+{%endblock%}
 
+{%block head %}
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js'></script>
+{%endblock%}
+
+{% block calendar %}
+    <div id="CALENDAR"></div>
+    <script>
+        // Force a window resize event
+        function forceResize() {
+            const resizeEvent = window.document.createEvent('UIEvents');
+            resizeEvent.initUIEvent('resize', true, false, window, 0);
+            window.dispatchEvent(resizeEvent);
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+            var calendarEl = document.getElementById('CALENDAR');
+            var events = {{ events|safe }};
+
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+                },
+                initialView: 'listWeek',
+                events: events,
+                eventClick: function(info) {
+                    // Redirect to the task detail page when clicking on an event
+                    window.location.href = '/tasks/task-detail/' + info.event.extendedProps.task_id;
+                },
+                eventDidMount: function(info) {
+                    // Customize event rendering here
+                    var task = events.find(function(event) {
+                        return event.id === info.event.id;
+                    });
+                    if (task) {
+                        // Set the background color based on task status
+                        info.el.style.backgroundColor = task.color;
+                    }
+                }
+            });
+
+            calendar.render();
+            setTimeout(forceResize, 500);
+        });
+    </script>
 {% endblock  %}
+

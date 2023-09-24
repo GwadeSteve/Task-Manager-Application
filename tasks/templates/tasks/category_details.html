@@ -29,10 +29,10 @@
     </div>
     <script>
         // Get the completion data from your Django template variables
-        var completedTasks = {{ category.get_completion_count.completed }};
-        var pendingTasks = {{ category.get_completion_count.pending }};
-        var lateTasks = {{ category.get_completion_count.postponed }};
-        var postponedTasks = {{ category.get_completion_count.late }};
+        var completedTasks = {{ completed_num }};
+        var pendingTasks = {{ pending_num }};
+        var lateTasks = {{ late_num }};
+        var postponedTasks = {{ postponed_num }};
         console.log(completedTasks,pendingTasks,lateTasks,postponedTasks);
     
         // Create the donut chart
