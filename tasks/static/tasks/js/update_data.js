@@ -11,7 +11,7 @@ function checkForUpdates() {
         })
         .finally(() => {
             // Set up the next request after a short delay (e.g., 5 seconds)
-            setTimeout(checkForUpdates, 5000);
+            setTimeout(checkForUpdates, 1000);
         });
 }
 
@@ -38,7 +38,7 @@ function updateUI(data) {
                 </span>
             </div>
             <p class="Description">${category.description.slice(0, 75)}${category.description.length > 75 ? '...' : ''}</p>
-            <p class="stats"><strong>Completed : </strong> ${category.completed_tasks}/${category.total_tasks}</p>
+            <p class="stats"><strong>Completed : </strong> ${category.completed_task_count}/${category.task_count}</p> <!-- Use the correct field names -->
             <a href="/tasks/category-detail/${category.id}">View</a>
             <p class="card-footer">Created : ${category.created_at}</p>
         </div>
@@ -54,7 +54,7 @@ function updateUI(data) {
                     <p class="first">${ task.title }</p>
                     <p class="second ${task.priority}-priority %}">${ task.priority }</p>
                 </div>
-                <p class="third"><strong>Category : </strong> ${ task.category }</p>
+                <p class="third"><strong>Category : </strong> ${ task.category }</p> <!-- Use task.category to access the category name -->
                 <p class="fourth"><strong>Start : </strong>${task.date_creation}</p>
                 <p class="fifth"><strong>Due : </strong>${task.due_date}</p>
             </a>

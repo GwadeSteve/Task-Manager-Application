@@ -33,13 +33,12 @@ class TaskForm(forms.ModelForm):
         return due_date
 
     def clean_due_time(self):
+        due_datetime = datetime.combine(self.cleaned_data['due_date'], self.cleaned_data['due_time'])
         due_time = self.cleaned_data['due_time']
-        now = datetime.now().time()
-
+        now = datetime.now()
         # Check if the due time is in the past for the current day
-        if due_time < now:
+        if due_datetime < now:
             raise ValidationError('Due time cannot be in the past.')
-
         return due_time
 
     def clean_reminder_datetime(self):
@@ -53,6 +52,7 @@ class TaskForm(forms.ModelForm):
         return reminder_datetime
 
     reminders = forms.DateTimeField(
+        required=False,
         help_text='Enter the reminder datetime in the format YYYY-MM-DD HH:MM (e.g., 2023-09-13 08:00).',
         widget=forms.DateTimeInput(attrs={'placeholder': 'YYYY-MM-DD HH:MM'}),
     )

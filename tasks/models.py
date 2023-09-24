@@ -31,7 +31,7 @@ class Category(models.Model):
     def get_completed_task_count(self):
         return self.task_set.filter(status='completed').count()
     
-    def get_completion_count(self):
+    def get__counts(self):
         Counts = {
             'completed':self.task_set.filter(status='completed').count(),
             'pending':self.task_set.filter(status='pending').count(),
@@ -90,7 +90,7 @@ class Task(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
     priority = models.CharField(max_length=20, choices=PRIORITY_CHOICES, default='medium')
     attachments = models.FileField(upload_to='attachments/', blank=True, null=True)
-    reminders = models.DateTimeField()
+    reminders = models.DateTimeField(blank=True, null=True)
 
     def __str__(self):
         return self.title

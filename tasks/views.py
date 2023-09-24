@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .serializers import TaskSerializer,CategorySerializer
+from .serializers import TaskSerializer, CategoryWithCountsSerializer
 from django.db.models import Q
 from datetime import datetime
 import json
@@ -29,23 +29,17 @@ def create_category_view(request):
 
 @login_required
 def create_task_view(request):
-    user = request.user
-    user_categories = Category.objects.filter(user=user)
     if request.method == 'POST':
-        form = TaskForm(request.POST, request.FILES, user=user)
+        form = TaskForm(request.POST, request.FILES, user=request.user)
         if form.is_valid():
-            category_id = form.cleaned_data.get('category')  # Get category id
-            category = get_object_or_404(Category, user=user, id=category_id)  # Filter by user and category name
             task = form.save(commit=False)
-            task.user = user
-            task.category = category
+            task.user = request.user
             task.save()
             messages.success(request, 'Task created successfully.')
             return redirect('tasks:task-list')
 
     else:
-        form = TaskForm(user=user)
-        form.fields['category'].queryset = user_categories
+        form = TaskForm(user=request.user)
 
     return render(request, 'tasks/create_task.html', {'form': form})
 
@@ -60,10 +54,10 @@ def task_detail_view(request, task_id):
 @login_required
 def category_detail_view(request, category_id):
     category = get_object_or_404(Category, id=category_id, user=request.user)
-    completedTasks = category.get_completion_count.completed
-    pendingTasks = category.get_completion_count.pending
-    lateTasks = category.get_completion_count.postponed
-    postponedTasks = category.get_completion_count.late
+    completedTasks = category.get__counts()['completed']
+    pendingTasks = category.get__counts()['pending']
+    lateTasks = category.get__counts()['late']
+    postponedTasks = category.get__counts()['postponed']
     context = {
         'category': category,
         'completed_num': completedTasks,
@@ -233,10 +227,11 @@ def get_updates(request):
     tasks = Task.objects.filter(user=request.user)
     categories = Category.objects.filter(user=request.user) 
     task_serializer = TaskSerializer(tasks, many=True)
-    category_serializer = CategorySerializer(categories, many=True)
+    category_serializer = CategoryWithCountsSerializer(categories, many=True)  # Use the new serializer
     data = {
         'tasks': task_serializer.data,
         'categories': category_serializer.data,
     }
     return Response(data)
+
 
