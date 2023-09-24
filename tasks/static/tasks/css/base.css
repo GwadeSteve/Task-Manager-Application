@@ -446,6 +446,7 @@ svg:hover {
 
 .categories .card {
     height: 300px;
+    width: 350px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -813,4 +814,47 @@ option,
     background: rgba(246, 44, 44, 0.7);
     color: white;
     margin: 10px 0;
+}
+
+
+/*Calendar Css*/
+
+#CALENDAR {
+    padding: 20px;
+    margin-top: 10px;
+}
+
+#CALENDAR::-webkit-scrollbar {
+    display: none;
+}
+
+
+/* Increase the font size for the date text */
+
+.fc-daygrid-day-number {
+    font-size: 20px;
+}
+
+
+/* Increase the padding around the date tiles */
+
+.fc-daygrid-day {
+    padding: 10px;
+    cursor: pointer;
+    /* Change cursor to pointer on hover */
+}
+
+
+/* Increase the line height for the date text */
+
+.fc-daygrid-day-events {
+    line-height: 2;
+}
+
+
+/* Define hover effect for date tiles */
+
+.fc-day:hover {
+    background-color: rgb(229, 229, 229);
+    /* Change background color on hover */
 }

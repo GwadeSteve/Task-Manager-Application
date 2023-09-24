@@ -1,6 +1,28 @@
+function checkForUpdates() {
+    fetch('/tasks/api/get_updates/')
+        .then(response => response.json())
+        .then(data => {
+            // Process and display updates in the console or update the UI
+            console.log(data.tasks, data.categories);
+            updateUI(data);
+        })
+        .catch(error => {
+            console.error('Error fetching updates:', error);
+        })
+        .finally(() => {
+            // Set up the next request after a short delay (e.g., 5 seconds)
+            setTimeout(checkForUpdates, 5000);
+        });
+}
+
+// Start checking for updates
+checkForUpdates();
+//+237 6557 40501 (Mi)
+//+237 6728 67725 (Noela)
+
+
 //Here i'll get data and update ui accordingly
-//...
-/*function updateUI(data) {
+function updateUI(data) {
     const categoryListDiv = document.querySelector('.categories');
     const taskListDiv = document.querySelector('.tasks');
     categoryListDiv.innerHTML = '';
@@ -10,12 +32,12 @@
         categoryElement.innerHTML = `
         <div class="card" style="z-index:-9999;">
             <div class="card-head">
-                <p><strong>${category.name}</strong></p>
+                <p><strong>${category.name.slice(0, 18)}${category.name.length > 18 ? '...' : ''}</strong></p>
                 <span class="material-symbols-outlined" id="category-menu">
                     more_vert
                 </span>
             </div>
-            <p class="Description">${category.description}</p>
+            <p class="Description">${category.description.slice(0, 75)}${category.description.length > 75 ? '...' : ''}</p>
             <p class="stats"><strong>Completed : </strong> ${category.completed_tasks}/${category.total_tasks}</p>
             <a href="/tasks/category-detail/${category.id}">View</a>
             <p class="card-footer">Created : ${category.created_at}</p>
@@ -41,9 +63,3 @@
         taskListDiv.appendChild(taskElement);
     });
 }
-
-// Initial call to fetch updates
-fetchUpdates();
-
-// Poll for updates every 5 seconds
-//setInterval(fetchUpdates, 5000);*/

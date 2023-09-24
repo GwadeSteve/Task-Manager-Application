@@ -3,13 +3,54 @@ from django.views.decorators.csrf import csrf_exempt
 from .models import Category, Task
 from .forms import CategoryForm, TaskForm,EditTaskForm,EditCategoryForm
 from django.contrib import messages
-from users.models import CustomUser
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .serializers import TaskSerializer,CategorySerializer
 from django.db.models import Q
+from datetime import datetime
+import json
+
+#Creating tasks and categories 
+
+@login_required
+def create_category_view(request):
+    if request.method == 'POST':
+        form = CategoryForm(request.POST)
+        if form.is_valid():
+            category = form.save(commit=False)
+            category.user = request.user
+            category.save()
+            return redirect('tasks:task-list')
+    else:
+        form = CategoryForm()
+    return render(request, 'tasks/create_category.html', {'form': form})
+
+@login_required
+def create_task_view(request):
+    user = request.user
+    user_categories = Category.objects.filter(user=user)
+    if request.method == 'POST':
+        form = TaskForm(request.POST, request.FILES, user=user)
+        if form.is_valid():
+            category_id = form.cleaned_data.get('category')  # Get category id
+            category = get_object_or_404(Category, user=user, id=category_id)  # Filter by user and category name
+            task = form.save(commit=False)
+            task.user = user
+            task.category = category
+            task.save()
+            messages.success(request, 'Task created successfully.')
+            return redirect('tasks:task-list')
+
+    else:
+        form = TaskForm(user=user)
+        form.fields['category'].queryset = user_categories
+
+    return render(request, 'tasks/create_task.html', {'form': form})
+
+
+#Details
 
 @login_required
 def task_detail_view(request, task_id):
@@ -19,8 +60,21 @@ def task_detail_view(request, task_id):
 @login_required
 def category_detail_view(request, category_id):
     category = get_object_or_404(Category, id=category_id, user=request.user)
-    return render(request, 'tasks/category_details.html', {'category': category})
+    completedTasks = category.get_completion_count.completed
+    pendingTasks = category.get_completion_count.pending
+    lateTasks = category.get_completion_count.postponed
+    postponedTasks = category.get_completion_count.late
+    context = {
+        'category': category,
+        'completed_num': completedTasks,
+        'pending_num' : pendingTasks,
+        'late_num': lateTasks,
+        'postponed_num': postponedTasks,
+    }
+    return render(request, 'tasks/category_details.html',context)
 
+
+#Edit Tasks and Categories
 @login_required
 def edit_task_view(request, task_id):
     task = get_object_or_404(Task, id=task_id, user=request.user)
@@ -49,6 +103,7 @@ def edit_category_view(request,category_id):
     return render(request,'tasks/edit_category.html',{'form':form,'category':category})   
 
 
+#Changing tasks statuses
 @login_required
 def mark_task_completed(request, task_id):
     task = get_object_or_404(Task, id=task_id, user=request.user)
@@ -65,12 +120,8 @@ def mark_task_postponed(request, task_id):
     task.save()
     return JsonResponse({'message': 'Task marked as postponed successfully'})
 
-@login_required
-def check_task_status(request, task_id):
-    task = get_object_or_404(Task,id=task_id, user = request.user)
-    task_status = task.status
-    return JsonResponse({'status': task_status})
 
+#delete tasks and categories
 @login_required
 def delete_task_view(request, task_id):
     task = get_object_or_404(Task, id=task_id, user=request.user)
@@ -82,50 +133,13 @@ def delete_task_view(request, task_id):
 @login_required
 def delete_category_view(request, category_id):
     category = get_object_or_404(Category, id=category_id, user=request.user)
-
     if request.method == 'POST':
         category.delete()
         return redirect('tasks:task-list')
-
     return render(request, 'tasks/delete_category.html', {'category':category})
 
-@login_required
-def create_category_view(request):
-    if request.method == 'POST':
-        form = CategoryForm(request.POST)
-        if form.is_valid():
-            category = form.save(commit=False)
-            category.user = request.user
-            category.save()
-            return redirect('tasks:task-list')
-    else:
-        form = CategoryForm()
-    return render(request, 'tasks/create_category.html', {'form': form})
 
-@login_required
-def create_task_view(request):
-    user = request.user
-    user_categories = Category.objects.filter(user=user)
-    if request.method == 'POST':
-        form = TaskForm(request.POST, request.FILES, user=user)
-        if form.is_valid():
-            category_name = form.cleaned_data.get('category')  # Get category name
-            category = get_object_or_404(Category, user=user, name=category_name)  # Filter by user and category name
-            task = form.save(commit=False)
-            task.user = user
-            task.category = category
-            task.save()
-            messages.success(request, 'Task created successfully.')
-            return redirect('tasks:task-list')
-
-    else:
-        form = TaskForm(user=user)
-        form.fields['category'].queryset = user_categories
-
-    return render(request, 'tasks/create_task.html', {'form': form})
-
-
-
+#Task/Category list views
 @login_required
 def task_list_view(request):
     categories = Category.objects.filter(user=request.user)
@@ -138,14 +152,55 @@ def task_category_view(request):
     tasks = Task.objects.filter(user=request.user)
     return render(request,'tasks/task_category.html',{'categories':categories,'tasks':tasks,})
 
+
+#Calendar
 @login_required
 def calendar(request):
-    return render(request,'tasks/calendar.html')
+    tasks = Task.objects.filter(user=request.user)
+    event_colors = {
+        'completed': '#379C2F',
+        'pending': 'rgba(92, 182, 249, 1)',
+        'late': 'rgb(251, 118, 118)',
+        'postponed': 'rgba(253, 158, 46, 1)',
+    }
+    events = []
+    for task in tasks:
+        start_datetime = datetime(
+            year=task.date_creation.year,
+            month=task.date_creation.month,
+            day=task.date_creation.day,
+            hour=task.time_creation.hour,
+            minute=task.time_creation.minute,
+        )
+        due_datetime = datetime(
+            year=task.due_date.year,
+            month=task.due_date.month,
+            day=task.due_date.day,
+            hour=task.due_time.hour,
+            minute=task.due_time.minute,
+        )
+        event = {
+            'id': task.id,  # Unique identifier for the event
+            'title': task.title,
+            'status': task.status,
+            'color': event_colors.get(task.status, ''),  # Set color based on status
+            'start': start_datetime.strftime('%Y-%m-%dT%H:%M:%S'),  # Use task creation datetime as start
+            'end': due_datetime.strftime('%Y-%m-%dT%H:%M:%S'),  
+            'allDay': False,  # Events span a specific time range
+            'task_id': task.id,  # Store task ID for eventClick
+        }
+        events.append(event)
 
+    return render(request, 'tasks/calendar.html', {'events': json.dumps(events)})
+
+
+#Stats
 @login_required
 def stats(request):
     return render(request,'tasks/stats.html')
 
+
+#Search functionality
 @login_required
 def search(request):
     query = request.GET.get('q', '')
@@ -168,8 +223,10 @@ def search(request):
         'Count' : Count_category+Count_task,
         }
     )
-    
 
+
+#API
+#Sending updates to frontend  
 @csrf_exempt
 @api_view(['GET'])
 def get_updates(request):
@@ -181,5 +238,5 @@ def get_updates(request):
         'tasks': task_serializer.data,
         'categories': category_serializer.data,
     }
-    return Response(request.data)
+    return Response(data)
 
