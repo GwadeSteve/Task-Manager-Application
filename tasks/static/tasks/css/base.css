@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Inclusive+Sans&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap');
 :root {
     --primary-blue: #12229D;
@@ -25,7 +26,7 @@
     box-sizing: border-box;
     list-style: none;
     text-decoration: none;
-    font-family: 'Lato', sans-serif;
+    font-family: 'Inclusive Sans', sans-serif;
     transition: all 0.3s ease-in-out;
     scroll-behavior: smooth;
 }
@@ -857,4 +858,125 @@ option,
 .fc-day:hover {
     background-color: rgb(229, 229, 229);
     /* Change background color on hover */
+}
+
+
+/*Stats page */
+
+#stats {
+    padding: 20px;
+    margin-top: 10px;
+}
+
+.Stats h1,
+.Stats h2 {
+    font-family: 'Inclusive Sans', sans-serif;
+    font-weight: bold;
+    font-size: 25px;
+}
+
+.circles {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+}
+
+.circles .element {
+    width: 250px;
+    height: 150px;
+    margin: 15px;
+    padding: 10px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    border-radius: 10px;
+}
+
+.circles .element>span {
+    font-size: 50px;
+}
+
+.circles .element.completed {
+    background: var(--task-completed-green);
+}
+
+.circles .element.postponed {
+    background: var(--task-postponed-yellow);
+}
+
+.circles .element.late {
+    background: var(--task-late-pinkish);
+}
+
+.circles .element.pending {
+    background: var(--task-pending-blue)
+}
+
+.circles .element .count {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.circles .element .count>span {
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.chart-container div {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px 0;
+}
+
+.chart-container canvas {
+    cursor: pointer;
+}
+
+.group1 {
+    width: 100%;
+    display: flex;
+}
+
+.group1 .plt2 {
+    margin-left: 200px;
+}
+
+.chart-container #dailyCompletedTasksChart {
+    max-width: 700px;
+    max-height: 600px;
+}
+
+.group1 #taskStatusDistributionChart {
+    max-width: 400px;
+    max-height: 400px;
+}
+
+.group1 #taskPriorityDistributionChart {
+    max-width: 500px;
+    max-height: 500px;
+}
+
+.chart-container #categoryTaskDistributionChart {
+    max-width: 400px;
+    max-height: 400px;
+}
+
+.chart-container #taskOverdueStatusChart {
+    max-width: 400px;
+    max-height: 400px;
+}
+
+.chart-container #categoryTaskDistributionChart {
+    max-width: 400px;
+    max-height: 400px;
+}
+
+.chart-container #taskOverdueStatusChart {
+    max-width: 500px;
+    max-height: 500px;
 }

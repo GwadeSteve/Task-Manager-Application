@@ -10,15 +10,13 @@ function checkForUpdates() {
             console.error('Error fetching updates:', error);
         })
         .finally(() => {
-            // Set up the next request after a short delay (e.g., 5 seconds)
-            setTimeout(checkForUpdates, 1000);
+            // Set up the next request after a short delay
+            setTimeout(checkForUpdates, 10000);
         });
 }
 
 // Start checking for updates
 checkForUpdates();
-//+237 6557 40501 (Mi)
-//+237 6728 67725 (Noela)
 
 
 //Here i'll get data and update ui accordingly

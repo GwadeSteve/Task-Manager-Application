@@ -1,7 +1,7 @@
 {% extends 'tasks/tasks_base.html' %}
 
 {% block head %}
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
 {% endblock %}
 
 {% block title%}
@@ -20,7 +20,7 @@
             <p><strong>Task Distribution</strong></p>
         </div>
         <div class="chart">
-            <canvas id="donutChart" width="200" height="200"></canvas>
+            <canvas id="donutChart" width="300" height="300"></canvas>
         </div>   
     </div>
     <div class="others">
@@ -38,7 +38,7 @@
         // Create the donut chart
         var ctx = document.getElementById('donutChart').getContext('2d');
         var donutChart = new Chart(ctx, {
-            type: 'doughnut',
+            type: 'polarArea',
             data: {
                 labels: ['Completed', 'Pending', 'Late', 'Postponed'],
                 datasets: [{
