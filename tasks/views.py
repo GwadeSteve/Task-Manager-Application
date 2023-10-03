@@ -144,11 +144,6 @@ def task_list_view(request):
     tasks = Task.objects.filter(user=request.user)
     return render(request,'tasks/task_list.html',{'categories':categories,'tasks':tasks})
 
-@login_required
-def task_category_view(request):
-    categories = Category.objects.filter(user=request.user)
-    tasks = Task.objects.filter(user=request.user)
-    return render(request,'tasks/task_category.html',{'categories':categories,'tasks':tasks,})
 
 
 #Calendar
@@ -190,7 +185,6 @@ def calendar(request):
         events.append(event)
 
     return render(request, 'tasks/calendar.html', {'events': json.dumps(events)})
-
 
 #Stats
 @login_required
@@ -307,6 +301,25 @@ def stats(request):
 
     return render(request, 'tasks/stats.html', context)
 
+def completed_tasks(request):
+    tasks = Task.objects.filter(status='completed')
+    count = True if tasks.count() else False
+    return render(request,'tasks/tasks.html',{'tasks':tasks,'count': count, 'type': 'Completed',})
+
+def postponed_tasks(request):
+    tasks = Task.objects.filter(status='postponed')
+    count = True if tasks.count() else False
+    return render(request,'tasks/tasks.html',{'tasks':tasks,'count': count, 'type': 'Postponed',})
+
+def late_tasks(request):
+    tasks = Task.objects.filter(status='late')
+    count = True if tasks.count() else False
+    return render(request,'tasks/tasks.html',{'tasks':tasks,'count': count, 'type': 'Late',})
+
+def pending_tasks(request):
+    tasks = Task.objects.filter(status='pending')
+    count = True if tasks.count() else False
+    return render(request,'tasks/tasks.html',{'tasks':tasks,'count': count, 'type': 'Pending',})
 
 #Search functionality
 @login_required

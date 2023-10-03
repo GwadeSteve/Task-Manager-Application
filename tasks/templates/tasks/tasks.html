@@ -1,0 +1,39 @@
+{% extends 'tasks/tasks_base.html' %}
+
+{% block title%}
+    <title>{{type}} tasks</title>
+{%endblock%}
+
+{% block search %}
+<div class="date">
+    <h2>These are the {{type}} tasks</h2>
+    <p style="padding-bottom:25px;">You can click any of them to see more details</p>
+</div>
+{% if count %}
+<div class="tasks">
+    {% for task in tasks %}
+        <div class="task {{task.status}}" style="transform:translateX(-20px);">
+            <a href="{% url 'tasks:task-detail' task.id %}">
+                <div class="heading">
+                    <p class="first">{{ task.title }}</p>
+                    <p class="second {{task.priority}}-priority">{{ task.priority }}</p>
+                </div>
+                <p class="third"><strong>Category : </strong> {{ task.category.name }}</p>
+                <p class="fourth"><strong>Start : </strong> {{ task.date_creation|date:"d F Y" }} at {{ task.time_creation|time:"H:i" }}</p>
+                <p class="fifth"><strong>Due : </strong> {{ task.due_date|date:"d F Y" }} at {{ task.due_time|date:"H:i" }}</p>
+            </a>
+        </div>
+    {% endfor %}
+</div>
+{%endif%}
+{% if not count %}
+<div class="task" style="transform:translateX(-20px);">
+    <a href="#">
+        <div class="heading">
+            <p class="first">You have no tasks yet</p>
+        </div>
+    </a>
+</div>
+{% endif %}
+{% endblock  %}
+

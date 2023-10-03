@@ -1,31 +1,25 @@
-{% extends "tasks/tasks_base.html" %}
-{% load static %}
-
-{% block title%}
+{% extends "tasks/tasks_base.html" %} {% load static %} {% block title%}
 <title>{{user.first_name}}'s Stats</title>
-{%endblock%}
-
-{% block head%}
-    <script src="https://cdn.jsdelivr.net/npm/luxon@2.0.1/build/global/luxon.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-luxon@2.0.1/dist/chartjs-adapter-luxon.bundle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
-{% endblock %}
-
-{% block stats %}
-    <div class="Stats">
-        <h2>Task Statistics</h2>
-        <p>Task Craft ensures you have all the encessary insights from your usage patterns.</p>
-        <div class="popup" style="margin-top:20px;border-bottom:0.5px solid rgba(0, 0, 0, 0.2);padding-bottom:19px;">
-            <h2>Category Facts</h2>
-            <div class="Cats">
-                <p>You have {{category_count}} categories and {{task_count}} Tasks</p>
-                <p><a style="color:blue;"href="/tasks/category-detail/{{cat_most_id}}">{{Category_with_most_tasks_name}}</a> has the highest number of tasks, Which is {{Category_with_most_tasks_value}}. Click to see details</p>
-            </div>
+{%endblock%} {% block head%}
+<script src="https://cdn.jsdelivr.net/npm/luxon@2.0.1/build/global/luxon.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-luxon@2.0.1/dist/chartjs-adapter-luxon.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
+{% endblock %} {% block stats %}
+<div class="Stats">
+    <h2>Task Statistics</h2>
+    <p>Task Craft ensures you have all the encessary insights from your usage patterns.</p>
+    <div class="popup" style="margin-top:20px;border-bottom:0.5px solid rgba(0, 0, 0, 0.2);padding-bottom:19px;">
+        <h2>Category Facts</h2>
+        <div class="Cats">
+            <p>You have {{category_count}} categories and {{task_count}} Tasks</p>
+            <p><a style="color:blue;" href="/tasks/category-detail/{{cat_most_id}}">{{Category_with_most_tasks_name}}</a> has the highest number of tasks, Which is {{Category_with_most_tasks_value}}. Click to see details</p>
         </div>
-        <div class="popup-container">
-            <div class="popup" style="margin-top:20px;border-bottom:0.5px solid rgba(0, 0, 0, 0.2);padding-bottom:19px;">
-                <h2>Task Counts</h2>
-                <div class="circles">
+    </div>
+    <div class="popup-container">
+        <div class="popup" style="margin-top:20px;border-bottom:0.5px solid rgba(0, 0, 0, 0.2);padding-bottom:19px;">
+            <h2>Task Counts</h2>
+            <a class="circles">
+                <a href={% url 'tasks:completed-tasks' %}>
                     <div class="element completed">
                         <span class="material-symbols-outlined">
                             task_alt
@@ -35,6 +29,8 @@
                             <p>Completed</p>
                         </div>
                     </div>
+                </a>
+                <a href={% url 'tasks:postponed-tasks' %}>
                     <div class="element postponed">
                         <img height="50px" width="50px" src={% static "tasks/Resources/clock.png" %}>
                         <div class="count">
@@ -42,245 +38,241 @@
                             <p>Postponed</p>
                         </div>
                     </div>
+                </a>
+                <a href={% url 'tasks:late-tasks' %}>
                     <div class="element late">
                         <span style="rotate:180deg;" class="material-symbols-outlined">
-                            hourglass_top
-                        </span>
+                                hourglass_top
+                            </span>
                         <div class="count">
                             <span>{{late_counts}}</span>
                             <p>Late</p>
                         </div>
                     </div>
+                </a>
+                <a href={% url 'tasks:pending-tasks' %}>
                     <div class="element pending">
                         <span class="material-symbols-outlined">
-                            pending_actions
-                        </span>
+                                pending_actions
+                            </span>
                         <div class="count">
                             <span>{{pending_counts}}</span>
                             <p>Pending</p>
                         </div>
                     </div>
-                </div>
-            </div>
-       </div>
-        <!-- Task Completion Over Time Line Chart -->
-        <div class="chart-container">
-            <h2>Task Completion Over Time</h2>
-            <div>
-                <canvas id="dailyCompletedTasksChart" width="700px" height="600px"></canvas>
-            </div>
+                </a>
         </div>
+    </div>
+</div>
+<!-- Task Completion Over Time Line Chart -->
+<div class="chart-container">
+    <h2>Task Completion Over Time</h2>
+    <div>
+        <canvas id="dailyCompletedTasksChart" width="700px" height="600px"></canvas>
+    </div>
+</div>
 
-        <div class="group1">
-            <!-- Task Status Distribution Pie Chart -->
-            <div class="chart-container plt1">
-                <h2>Task Status Distribution</h2>
-                <div>
-                    <canvas id="taskStatusDistributionChart" width="400px" height="400px"></canvas>
-                </div>
-            </div>
-
-            <!-- Task Priority Distribution Bar Chart -->
-            <div class="chart-container plt2">
-                <h2>Task Priority Distribution</h2>
-                <div>
-                    <canvas id="taskPriorityDistributionChart" width="400px" height="400px"></canvas>
-                </div>
-            </div>
+<div class="group1">
+    <!-- Task Status Distribution Pie Chart -->
+    <div class="chart-container plt1">
+        <h2>Task Status Distribution</h2>
+        <div>
+            <canvas id="taskStatusDistributionChart" width="400px" height="400px"></canvas>
         </div>
-
-        <!-- Category-wise Task Distribution Bar Chart -->
-        <div class="chart-container">
-            <h2>Category-wise Task Distribution</h2>
-            <div>
-                <canvas id="categoryTaskDistributionChart" width="400px" height="400px"></canvas>
-            </div>
-        </div>
-
-        <!-- Task Overdue bar chart -->
-        <div class="chart-container">
-            <h2>Task Overdue Status Bar Chart</h2>
-            <div>
-                <canvas id="taskOverdueStatusChart" width="500px" height="500px"></canvas>
-            </div>
-        </div>
-
     </div>
 
-    <script>
-        const data = JSON.parse('{{daily_completed_tasks|safe}}');
-        const labels = data.map(entry => entry.completion_date);
-        const counts = data.map(entry => entry.count);
-        const ctx = document.getElementById('dailyCompletedTasksChart').getContext('2d');
-        const lineChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: labels, // Dates on the x-axis
-                datasets: [
-                    {
-                        label: 'Task Counts', // Legend label
-                        data: counts, // Counts on the y-axis
-                        borderColor: 'rgb(75, 192, 192)', // Line color
-                        borderWidth: 2, // Line width
-                        fill: false, // Do not fill the area under the line
+    <!-- Task Priority Distribution Bar Chart -->
+    <div class="chart-container plt2">
+        <h2>Task Priority Distribution</h2>
+        <div>
+            <canvas id="taskPriorityDistributionChart" width="400px" height="400px"></canvas>
+        </div>
+    </div>
+</div>
+
+<!-- Category-wise Task Distribution Bar Chart -->
+<div class="chart-container">
+    <h2>Category-wise Task Distribution</h2>
+    <div>
+        <canvas id="categoryTaskDistributionChart" width="400px" height="400px"></canvas>
+    </div>
+</div>
+
+<!-- Task Overdue bar chart -->
+<div class="chart-container">
+    <h2>Task Overdue Status Bar Chart</h2>
+    <div>
+        <canvas id="taskOverdueStatusChart" width="500px" height="500px"></canvas>
+    </div>
+</div>
+
+</div>
+
+<script>
+    const data = JSON.parse('{{daily_completed_tasks|safe}}');
+    const labels = data.map(entry => entry.completion_date);
+    const counts = data.map(entry => entry.count);
+    const ctx = document.getElementById('dailyCompletedTasksChart').getContext('2d');
+    const lineChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels, // Dates on the x-axis
+            datasets: [{
+                label: 'Task Counts', // Legend label
+                data: counts, // Counts on the y-axis
+                borderColor: 'rgb(75, 192, 192)', // Line color
+                borderWidth: 2, // Line width
+                fill: false, // Do not fill the area under the line
+            }, ],
+        },
+        options: {
+            responsive: true,
+            scales: {
+                x: {
+                    type: 'time', // Use 'time' type for Date objects
+                    time: {
+                        unit: 'day', // Display by day
+                        displayFormats: {
+                            day: 'MMM DD, YYYY', // Adjust date format as needed
+                        },
                     },
+                    title: {
+                        display: true,
+                        text: 'Date', // X-axis label
+                    },
+                },
+                y: {
+                    beginAtZero: true, // Start y-axis at zero
+                    title: {
+                        display: true,
+                        text: 'Task Count', // Y-axis label
+                    },
+                },
+            },
+        },
+    });
+
+
+    const taskStatusDistributionData = JSON.parse('{{ task_status_distribution | escapejs }}');
+    const statusLabels = taskStatusDistributionData.map(item => item.status);
+    const statusCounts = taskStatusDistributionData.map(item => item.count);
+    const taskStatusDistributionCtx = document.getElementById('taskStatusDistributionChart').getContext('2d');
+    new Chart(taskStatusDistributionCtx, {
+        type: 'polarArea',
+        data: {
+            labels: statusLabels,
+            datasets: [{
+                data: statusCounts, //pending, completed, postponed, late 
+                backgroundColor: ['rgba(92, 182, 249, 1)', '#379C2F', 'rgba(253, 158, 46, 1)', 'rgb(251, 118, 118)'],
+            }],
+        },
+        options: {
+            responsive: false, // Set to false to disable responsive resizing
+            maintainAspectRatio: false, // Set to false to disable aspect ratio scaling
+            legend: {
+                position: 'bottom',
+            },
+        },
+    });
+
+
+    // Task Priority Distribution Bar Chart
+    const taskPriorityDistributionData = JSON.parse('{{ priority_distribution | escapejs }}');
+    const priorityLabels = taskPriorityDistributionData.map(item => item.priority);
+    const priorityData = taskPriorityDistributionData.map(item => item.count);
+
+    const taskPriorityDistributionCtx = document.getElementById('taskPriorityDistributionChart').getContext('2d');
+    new Chart(taskPriorityDistributionCtx, {
+        type: 'bar',
+        data: {
+            labels: priorityLabels,
+            datasets: [{
+                label: 'Priority Distribution',
+                data: priorityData,
+                backgroundColor: [
+                    'rgba(254, 4, 4,0.4)', // Color for high priority
+                    'rgba(177, 7, 220,0.4)', // Color for low priority
+                    'rgba(255, 195, 0, 0.4)', // Color for medium priority
                 ],
+                borderColor: [
+                    'rgba(254, 4, 4, 1)',
+                    'rgba(177, 7, 220, 1)',
+                    'rgba(255, 195, 0, 1)',
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: false, // Set to false to disable responsive resizing
+            maintainAspectRatio: false, // Set to false to disable aspect ratio scaling
+            legend: {
+                position: 'bottom',
             },
-            options: {
-                responsive: true,
-                scales: {
-                    x: {
-                        type: 'time', // Use 'time' type for Date objects
-                        time: {
-                            unit: 'day', // Display by day
-                            displayFormats: {
-                                day: 'MMM DD, YYYY', // Adjust date format as needed
-                            },
-                        },
-                        title: {
-                            display: true,
-                            text: 'Date', // X-axis label
-                        },
-                    },
-                    y: {
-                        beginAtZero: true, // Start y-axis at zero
-                        title: {
-                            display: true,
-                            text: 'Task Count', // Y-axis label
-                        },
-                    },
-                },
-            },
-        });
-
-
-        const taskStatusDistributionData = JSON.parse('{{ task_status_distribution | escapejs }}');
-        const statusLabels = taskStatusDistributionData.map(item => item.status);
-        const statusCounts = taskStatusDistributionData.map(item => item.count);
-        const taskStatusDistributionCtx = document.getElementById('taskStatusDistributionChart').getContext('2d');
-        new Chart(taskStatusDistributionCtx, {
-            type: 'polarArea',
-            data: {
-                labels: statusLabels,
-                datasets: [{
-                    data: statusCounts, //pending, completed, postponed, late 
-                    backgroundColor: ['rgba(92, 182, 249, 1)','#379C2F', 'rgba(253, 158, 46, 1)','rgb(251, 118, 118)'],
-                }],
-            },
-            options: {
-                responsive: false, // Set to false to disable responsive resizing
-                maintainAspectRatio: false, // Set to false to disable aspect ratio scaling
-                legend: {
-                    position: 'bottom',
-                },
-            },
-        });
-        
-
-        // Task Priority Distribution Bar Chart
-        const taskPriorityDistributionData = JSON.parse('{{ priority_distribution | escapejs }}');
-        const priorityLabels = taskPriorityDistributionData.map(item => item.priority);
-        const priorityData = taskPriorityDistributionData.map(item => item.count);
-
-        const taskPriorityDistributionCtx = document.getElementById('taskPriorityDistributionChart').getContext('2d');
-        new Chart(taskPriorityDistributionCtx, {
-            type: 'bar',
-            data: {
-                labels: priorityLabels,
-                datasets: [{
-                    label: 'Priority Distribution',
-                    data: priorityData,
-                    backgroundColor: [
-                        'rgba(254, 4, 4,0.4)',  // Color for high priority
-                        'rgba(177, 7, 220,0.4)', // Color for low priority
-                        'rgba(255, 195, 0, 0.4)', // Color for medium priority
-                    ],
-                    borderColor: [
-                        'rgba(254, 4, 4, 1)',
-                        'rgba(177, 7, 220, 1)',
-                        'rgba(255, 195, 0, 1)',
-                    ],
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: false, // Set to false to disable responsive resizing
-                maintainAspectRatio: false, // Set to false to disable aspect ratio scaling
-                legend: {
-                    position: 'bottom',
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        step: 2,
-                    }
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    step: 2,
                 }
             }
-        });
+        }
+    });
 
 
-        const categoryDistributionData = JSON.parse('{{ category_distribution_json|safe }}');
-        const categoryNames = categoryDistributionData.map(entry => entry.name);
-        const taskCounts = categoryDistributionData.map(entry => entry.task_count);
-        const categoryTaskDistributionChartctx = document.getElementById('categoryTaskDistributionChart').getContext('2d');
-        new Chart(categoryTaskDistributionChartctx, {
-            type: 'bar',
-            data: {
-                labels: categoryNames, // Category names on the x-axis
-                datasets: [
-                    {
-                        label: 'Task Count', // Legend label
-                        data: taskCounts, // Task counts on the y-axis
-                        backgroundColor: 'rgba(75, 192, 192, 0.7)', // Bar color
-                        borderWidth: 1,
-                    },
-                ],
+    const categoryDistributionData = JSON.parse('{{ category_distribution_json|safe }}');
+    const categoryNames = categoryDistributionData.map(entry => entry.name);
+    const taskCounts = categoryDistributionData.map(entry => entry.task_count);
+    const categoryTaskDistributionChartctx = document.getElementById('categoryTaskDistributionChart').getContext('2d');
+    new Chart(categoryTaskDistributionChartctx, {
+        type: 'bar',
+        data: {
+            labels: categoryNames, // Category names on the x-axis
+            datasets: [{
+                label: 'Task Count', // Legend label
+                data: taskCounts, // Task counts on the y-axis
+                backgroundColor: 'rgba(75, 192, 192, 0.7)', // Bar color
+                borderWidth: 1,
+            }, ],
+        },
+        options: {
+            responsive: true,
+            legend: {
+                display: false, // Hide legend
             },
-            options: {
-                responsive: true,
-                legend: {
-                    display: false, // Hide legend
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true, // Start y-axis at zero
-                    },
+            scales: {
+                y: {
+                    beginAtZero: true, // Start y-axis at zero
                 },
             },
-        });
+        },
+    });
 
 
-        const taskOverdueData = JSON.parse('{{ task_overdue_json|safe }}');
-        const labelsstatus = taskOverdueData.map(entry => entry.status);
-        const statusCountss = taskOverdueData.map(entry => entry.count);
-        const taskOverdueStatusChartctx = document.getElementById('taskOverdueStatusChart').getContext('2d');
-        new Chart(taskOverdueStatusChartctx, {
-            type: 'bar',
-            data: {
-                labels: labelsstatus, // Status labels on the x-axis
-                datasets: [
-                    {
-                        label: 'Task Count', // Legend label
-                        data: statusCountss, // Task counts on the y-axis
-                        backgroundColor: 'rgba(255, 99, 132, 0.7)', // Bar color
-                        borderWidth: 1,
-                    },
-                ],
+    const taskOverdueData = JSON.parse('{{ task_overdue_json|safe }}');
+    const labelsstatus = taskOverdueData.map(entry => entry.status);
+    const statusCountss = taskOverdueData.map(entry => entry.count);
+    const taskOverdueStatusChartctx = document.getElementById('taskOverdueStatusChart').getContext('2d');
+    new Chart(taskOverdueStatusChartctx, {
+        type: 'bar',
+        data: {
+            labels: labelsstatus, // Status labels on the x-axis
+            datasets: [{
+                label: 'Task Count', // Legend label
+                data: statusCountss, // Task counts on the y-axis
+                backgroundColor: 'rgba(255, 99, 132, 0.7)', // Bar color
+                borderWidth: 1,
+            }, ],
+        },
+        options: {
+            responsive: true,
+            legend: {
+                display: false, // Hide legend
             },
-            options: {
-                responsive: true,
-                legend: {
-                    display: false, // Hide legend
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true, // Start y-axis at zero
-                    },
+            scales: {
+                y: {
+                    beginAtZero: true, // Start y-axis at zero
                 },
             },
-        });
-
-    </script>
+        },
+    });
+</script>
 {% endblock %}
-
-

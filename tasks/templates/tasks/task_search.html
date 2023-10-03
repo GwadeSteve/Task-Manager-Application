@@ -37,7 +37,7 @@
             <a href="{% url 'tasks:task-detail' task.id %}">
                 <div class="heading">
                     <p class="first">{{ task.title }}</p>
-                    <p class="second {{task.priority}}-priority %}">{{ task.priority }}</p>
+                    <p class="second {{task.priority}}-priority">{{ task.priority }}</p>
                 </div>
                 <p class="third"><strong>Category : </strong> {{ task.category.name }}</p>
                 <p class="fourth"><strong>Start : </strong> {{ task.date_creation|date:"d F Y" }} at {{ task.time_creation|time:"H:i" }}</p>

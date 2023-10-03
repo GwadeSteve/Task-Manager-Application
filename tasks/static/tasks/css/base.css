@@ -875,6 +875,15 @@ option,
     font-size: 25px;
 }
 
+.Stats p {
+    font-size: 18px;
+    margin: 10px 0;
+}
+
+.popup h2 {
+    margin-bottom: 20px;
+}
+
 .circles {
     display: flex;
     align-items: center;
@@ -935,6 +944,7 @@ option,
 
 .chart-container canvas {
     cursor: pointer;
+    margin: 10px 0;
 }
 
 .group1 {
@@ -944,6 +954,15 @@ option,
 
 .group1 .plt2 {
     margin-left: 200px;
+}
+
+.chart-container>h2 {
+    padding: 20px 0;
+}
+
+.chart-container {
+    padding: 20px;
+    margin: 10px 0;
 }
 
 .chart-container #dailyCompletedTasksChart {
