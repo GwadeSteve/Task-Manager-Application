@@ -18,93 +18,85 @@
     <div class="popup-container">
         <div class="popup" style="margin-top:20px;border-bottom:0.5px solid rgba(0, 0, 0, 0.2);padding-bottom:19px;">
             <h2>Task Counts</h2>
-            <a class="circles">
-                <a href={% url 'tasks:completed-tasks' %}>
-                    <div class="element completed">
-                        <span class="material-symbols-outlined">
+            <div class="circles">
+                <a href={% url 'tasks:completed-tasks' %} class="element completed">
+                    <span class="material-symbols-outlined">
                             task_alt
                         </span>
-                        <div class="count">
-                            <span>{{completed_counts}}</span>
-                            <p>Completed</p>
-                        </div>
+                    <div class="count">
+                        <span>{{completed_counts}}</span>
+                        <p>Completed</p>
                     </div>
                 </a>
-                <a href={% url 'tasks:postponed-tasks' %}>
-                    <div class="element postponed">
-                        <img height="50px" width="50px" src={% static "tasks/Resources/clock.png" %}>
-                        <div class="count">
-                            <span>{{postponed_counts}}</span>
-                            <p>Postponed</p>
-                        </div>
+                <a href={% url 'tasks:postponed-tasks' %} class="element postponed">
+                    <img height="50px" width="50px" src={% static "tasks/Resources/clock.png" %}>
+                    <div class="count">
+                        <span>{{postponed_counts}}</span>
+                        <p>Postponed</p>
                     </div>
                 </a>
-                <a href={% url 'tasks:late-tasks' %}>
-                    <div class="element late">
-                        <span style="rotate:180deg;" class="material-symbols-outlined">
+                <a href={% url 'tasks:late-tasks' %} class="element late">
+                    <span style="rotate:180deg;" class="material-symbols-outlined">
                                 hourglass_top
                             </span>
-                        <div class="count">
-                            <span>{{late_counts}}</span>
-                            <p>Late</p>
-                        </div>
+                    <div class="count">
+                        <span>{{late_counts}}</span>
+                        <p>Late</p>
                     </div>
                 </a>
-                <a href={% url 'tasks:pending-tasks' %}>
-                    <div class="element pending">
-                        <span class="material-symbols-outlined">
+                <a href={% url 'tasks:pending-tasks' %} class="element pending">
+                    <span class="material-symbols-outlined">
                                 pending_actions
                             </span>
-                        <div class="count">
-                            <span>{{pending_counts}}</span>
-                            <p>Pending</p>
-                        </div>
+                    <div class="count">
+                        <span>{{pending_counts}}</span>
+                        <p>Pending</p>
                     </div>
                 </a>
+            </div>
         </div>
     </div>
-</div>
-<!-- Task Completion Over Time Line Chart -->
-<div class="chart-container">
-    <h2>Task Completion Over Time</h2>
-    <div>
-        <canvas id="dailyCompletedTasksChart" width="700px" height="600px"></canvas>
-    </div>
-</div>
-
-<div class="group1">
-    <!-- Task Status Distribution Pie Chart -->
-    <div class="chart-container plt1">
-        <h2>Task Status Distribution</h2>
+    <!-- Task Completion Over Time Line Chart -->
+    <div class="chart-container">
+        <h2>Task Completion Over Time</h2>
         <div>
-            <canvas id="taskStatusDistributionChart" width="400px" height="400px"></canvas>
+            <canvas id="dailyCompletedTasksChart" width="700px" height="600px"></canvas>
         </div>
     </div>
 
-    <!-- Task Priority Distribution Bar Chart -->
-    <div class="chart-container plt2">
-        <h2>Task Priority Distribution</h2>
+    <div class="group1">
+        <!-- Task Status Distribution Pie Chart -->
+        <div class="chart-container plt1">
+            <h2>Task Status Distribution</h2>
+            <div>
+                <canvas id="taskStatusDistributionChart" width="400px" height="400px"></canvas>
+            </div>
+        </div>
+
+        <!-- Task Priority Distribution Bar Chart -->
+        <div class="chart-container plt2">
+            <h2>Task Priority Distribution</h2>
+            <div>
+                <canvas id="taskPriorityDistributionChart" width="400px" height="400px"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Category-wise Task Distribution Bar Chart -->
+    <div class="chart-container">
+        <h2>Category-wise Task Distribution</h2>
         <div>
-            <canvas id="taskPriorityDistributionChart" width="400px" height="400px"></canvas>
+            <canvas id="categoryTaskDistributionChart" width="400px" height="400px"></canvas>
         </div>
     </div>
-</div>
 
-<!-- Category-wise Task Distribution Bar Chart -->
-<div class="chart-container">
-    <h2>Category-wise Task Distribution</h2>
-    <div>
-        <canvas id="categoryTaskDistributionChart" width="400px" height="400px"></canvas>
+    <!-- Task Overdue bar chart -->
+    <div class="chart-container">
+        <h2>Task Overdue Status Bar Chart</h2>
+        <div>
+            <canvas id="taskOverdueStatusChart" width="500px" height="500px"></canvas>
+        </div>
     </div>
-</div>
-
-<!-- Task Overdue bar chart -->
-<div class="chart-container">
-    <h2>Task Overdue Status Bar Chart</h2>
-    <div>
-        <canvas id="taskOverdueStatusChart" width="500px" height="500px"></canvas>
-    </div>
-</div>
 
 </div>
 

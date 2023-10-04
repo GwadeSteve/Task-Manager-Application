@@ -891,7 +891,7 @@ option,
     justify-content: flex-start;
 }
 
-.circles .element {
+.element {
     width: 250px;
     height: 150px;
     margin: 15px;
@@ -902,7 +902,7 @@ option,
     border-radius: 10px;
 }
 
-.circles .element>span {
+.element span {
     font-size: 50px;
 }
 

@@ -145,7 +145,6 @@ def task_list_view(request):
     return render(request,'tasks/task_list.html',{'categories':categories,'tasks':tasks})
 
 
-
 #Calendar
 @login_required
 def calendar(request):
@@ -189,6 +188,7 @@ def calendar(request):
 #Stats
 @login_required
 def stats(request):
+    #-Get all taska dn categories for the currently logged in user
     categories = Category.objects.filter(user=request.user)
     tasks = Task.objects.filter(user=request.user)
 
@@ -197,9 +197,7 @@ def stats(request):
     Cat_with_most_tasks = {key: val for key, val in sorted(Cat_dict.items(), key = lambda ele: ele[1], reverse = True)}
     Cat_max_val = max(Cat_with_most_tasks.values())
     Cat_max_key = max(Cat_with_most_tasks,key=Cat_with_most_tasks.get)
-    # Get the Category object for the category with the most tasks
     category_with_most_tasks = categories.get(name=Cat_max_key)
-    # Get the id of the category with the most tasks
     cat_most_id = category_with_most_tasks.id
 
     #Category and task counts
@@ -219,18 +217,13 @@ def stats(request):
     ).annotate(
         completion_date=TruncDate('due_date')
     ).values('completion_date').annotate(count=Count('id'))
-
-    # Convert the QuerySet to a list of dictionaries
     daily_completed_tasks_data = list(daily_completed_tasks_data)
-
     # Convert date objects to strings
     for entry in daily_completed_tasks_data:
         entry['completion_date'] = entry['completion_date'].strftime('%Y-%m-%d')
-
     # Convert the data to a JSON string
     daily_completed_tasks_data_json = json.dumps(daily_completed_tasks_data)
     print(daily_completed_tasks_data_json)
-
 
    # Calculate task status distribution
     task_status_distribution = Task.objects.filter(user=request.user).values('status').annotate(count=Count('status'))
@@ -239,37 +232,19 @@ def stats(request):
 
     #Task Priority Distribution Bar Chart:
     priority_distribution = Task.objects.filter(user=request.user).values('priority').annotate(count=Count('id'))
-    # Convert it to a JSON-like string
     priority_distribution_json = json.dumps(list(priority_distribution))
 
     #Category-wise Completion Rate Radar Chart:
-    # Fetch the data for Category-wise Task Distribution
     category_distribution_data = Category.objects.annotate(task_count=Count('task')).values('name', 'task_count')
-
     # Convert the QuerySet to a list of dictionaries
     category_distribution_data = list(category_distribution_data)
-
     # Convert the data to a JSON string
     category_distribution_json = json.dumps(category_distribution_data)
 
     #Task Overdue Status Bar Chart:
-    # Fetch the data for Task Overdue Status Bar Chart
     task_overdue_data = Task.objects.filter(status='overdue').values('status').annotate(count=Count('id'))
-
-    # Convert the QuerySet to a list of dictionaries
     task_overdue_data = list(task_overdue_data)
-
-    # Convert the data to a JSON string
     task_overdue_json = json.dumps(task_overdue_data)
-
-    #Task Attachment Distribution Pie Chart:
-    attachment_distribution = Task.objects.filter(user=request.user).annotate(
-        has_attachment=Case(
-            When(attachments__isnull=True, then=Value('No')),
-            default=Value('Yes'),
-            output_field=IntegerField(),
-        )
-    ).values('has_attachment').annotate(count=Count('id'))
 
     #Task Completion Rate Histogram
     task_completion_rates = Task.objects.filter(user=request.user).annotate(
@@ -295,7 +270,6 @@ def stats(request):
         'category_distribution_json':category_distribution_json,
         'categories': categories,
         'task_overdue_json': task_overdue_json,
-        'attachment_distribution': attachment_distribution,
         'task_completion_rates': task_completion_rates,
     }
 
