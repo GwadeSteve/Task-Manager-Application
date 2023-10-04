@@ -1,10 +1,17 @@
-{% extends "tasks/tasks_base.html" %} {% load static %} {% block title%}
+{% extends "tasks/tasks_base.html" %} 
+{% load static %} 
+
+{% block title%}
 <title>{{user.first_name}}'s Stats</title>
-{%endblock%} {% block head%}
+{%endblock%} 
+
+{% block head%}
 <script src="https://cdn.jsdelivr.net/npm/luxon@2.0.1/build/global/luxon.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-luxon@2.0.1/dist/chartjs-adapter-luxon.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
-{% endblock %} {% block stats %}
+{% endblock %} 
+
+{% block stats %}
 <div class="Stats">
     <h2>Task Statistics</h2>
     <p>Task Craft ensures you have all the encessary insights from your usage patterns.</p>

@@ -1,5 +1,29 @@
 {% extends 'tasks/tasks_base.html' %}
+{% load static %}
 
 {% block profile %}
-
+<h2>Your Profile</h2>
+<div class="tiles">
+    <div class="profile-pic">
+        <div class="pic">
+            {% if user.profile_picture %}
+                <img src="{{ user.profile_picture.url }}" alt="{{ user.first_name }}'s Profile Picture">
+            {% else %}
+                <img src="{% static 'users/Resources/default.png' %}" alt="Default Profile Picture">
+            {% endif %}
+        </div>
+        <div class="pic-edit">
+            <span class="material-symbols-outlined">
+                edit
+            </span>
+        </div>
+    </div>
+    <div class="User-details">
+        <p><strong>First Name:</strong> {{ user.first_name }}</p>
+        <p><strong>Last Name:</strong> {{ user.last_name }}</p>
+        <p><strong>Gender:</strong> {{ user.gender }}</p>
+        <p><strong>Email:</strong> {{ user.email }}</p>
+        <p style="font-size: 16px; margin-top:15px;">Joined since {{ user.date_joined }}</p>
+    </div>    
+</div>
 {% endblock  %}
