@@ -1,0 +1,11 @@
+{% extends 'tasks/tasks_base.html' %} 
+{% load static %} 
+{% block update_profile %}
+<form method="post" enctype="multipart/form-data">
+    <h2>Edit Profile</h2>
+    {% csrf_token %}
+    {{form.as_p}}
+    <button type="submit">Save</button>
+</form>
+{% endblock %}
+
